@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Instrument_Sans, JetBrains_Mono, Newsreader } from "next/font/google";
 import type { ReactNode } from "react";
@@ -28,6 +29,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: site.seo.title, template: `%s | ${site.name}` },
@@ -55,6 +58,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
       </head>
+      {gtmId && <GoogleTagManager gtmId={gtmId} />}
       <body suppressHydrationWarning>
         <a
           href="#main"
