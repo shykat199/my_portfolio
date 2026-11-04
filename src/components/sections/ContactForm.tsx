@@ -10,7 +10,7 @@ const { contact } = site;
 const initialState: ContactState = { status: "idle" };
 
 const inputClass =
-  "mt-2 block w-full rounded-lg border bg-raised px-3.5 py-3 text-base text-fg transition-colors focus:border-accent";
+  "mt-2 block w-full rounded-lg border bg-raised px-3.5 py-3 text-base text-fg transition-colors placeholder:text-muted/60 focus:border-accent";
 
 type FieldProps = {
   name: ContactField;
@@ -28,6 +28,7 @@ function Field({ name, label, state, type = "text", autoComplete, required, mult
     id: name,
     name,
     required,
+    placeholder: contact.placeholders[name],
     defaultValue: state.values?.[name],
     "aria-invalid": error ? true : undefined,
     "aria-describedby": error ? `${name}-error` : undefined,

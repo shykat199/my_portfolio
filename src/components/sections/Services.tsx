@@ -15,7 +15,7 @@ export function Services() {
         {services.items.map((service, index) => (
           <li key={service.name}>
             <Reveal delay={index * 0.08} className="h-full">
-              <article className="flex h-full flex-col rounded-lg border border-line bg-raised p-7 transition-colors duration-200 hover:border-fg/30">
+              <article className="matte-card flex h-full flex-col rounded-lg border border-line p-7 transition-colors duration-200 hover:border-fg/30">
                 <h3 className="text-[1.75rem] leading-tight">{service.name}</h3>
                 <p className="mt-3 leading-relaxed text-muted">{service.forWho}</p>
 

@@ -101,7 +101,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
             </span>
           )}
         </p>
-        <h1 className="mt-4 max-w-3xl text-[2.75rem] leading-[1.06] sm:text-6xl">{project.title}</h1>
+        <h1 className="mt-4 max-w-3xl type-display">{project.title}</h1>
       </header>
 
       <div className="wrap">
@@ -167,9 +167,9 @@ export default async function CaseStudyPage({ params }: PageProps) {
 
       <section className="mt-10 border-t border-line bg-raised">
         <div className="wrap section-y">
-          <h2 className="max-w-2xl text-4xl leading-[1.1] sm:text-5xl">{caseStudy.ctaTitle}</h2>
+          <h2 className="max-w-2xl type-section">{caseStudy.ctaTitle}</h2>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">{caseStudy.ctaText}</p>
-          <Button href={bookingHref} className="mt-8">
+          <Button href={bookingHref} icon="calendar" className="mt-8">
             {cta.hero}
           </Button>
         </div>

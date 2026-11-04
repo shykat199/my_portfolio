@@ -19,7 +19,7 @@ const contactSchema = z.object({
     .trim()
     .max(200, "Please use a shorter address.")
     .refine((value) => value === "" || websitePattern.test(value), {
-      error: "Please enter a valid website address, like example.co.uk.",
+      error: "Please enter a valid website address, like example.com.",
     }),
   message: z
     .string()

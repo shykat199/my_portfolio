@@ -1,4 +1,6 @@
 import type {
+  Blog,
+  BlogPosting,
   BreadcrumbList,
   CreativeWork,
   FAQPage,
@@ -11,6 +13,7 @@ import type {
   WebPage,
   WebSite,
 } from "schema-dts";
+import type { BlogPost } from "@content/blog";
 import { site, type FaqItem, type Project, type Service } from "@content/site";
 
 const { url, about } = site;
@@ -106,7 +109,7 @@ const business: ProfessionalService = {
   logo: { "@id": schemaIds.logo },
   image: { "@id": schemaIds.photo },
   founder: { "@id": schemaIds.person },
-  areaServed: { "@type": "Country", name: "United Kingdom" },
+  areaServed: "Worldwide",
   priceRange: "££",
   contactPoint: {
     "@type": "ContactPoint",
@@ -189,7 +192,7 @@ export function serviceNode(service: Service): ServiceSchema {
     description: service.intro,
     url: `${url}/services/${service.slug}`,
     provider: { "@id": schemaIds.business },
-    areaServed: "GB",
+    areaServed: "Worldwide",
     offers: serviceOffer(service),
   };
 }
@@ -208,5 +211,43 @@ export function caseStudyNode(project: Project): CreativeWork {
     dateCreated: project.year,
     keywords: project.tech.join(", "),
     ...(project.isDemo ? { creativeWorkStatus: "Demo" } : {}),
+  };
+}
+
+export function blogNode(path: string, name: string, description: string, items: BlogPost[]): Blog {
+  const page = pageUrl(path);
+
+  return {
+    "@type": "Blog",
+    "@id": `${page}#blog`,
+    name,
+    description,
+    url: page,
+    inLanguage: "en-GB",
+    publisher: { "@id": schemaIds.person },
+    blogPost: items.map((post) => ({ "@id": `${url}/blog/${post.slug}#article` })),
+  };
+}
+
+export function blogPostingNode(post: BlogPost, words: number): BlogPosting {
+  const page = `${url}/blog/${post.slug}`;
+
+  return {
+    "@type": "BlogPosting",
+    "@id": `${page}#article`,
+    headline: post.title,
+    description: post.description,
+    url: page,
+    mainEntityOfPage: { "@id": `${page}#webpage` },
+    image: [`${url}${post.cover.src}`, `${page}/opengraph-image`],
+    datePublished: post.published,
+    dateModified: post.updated ?? post.published,
+    author: { "@id": schemaIds.person },
+    publisher: { "@id": schemaIds.person },
+    isPartOf: { "@id": `${url}/blog#blog` },
+    articleSection: post.category,
+    keywords: post.tags.join(", "),
+    wordCount: words,
+    inLanguage: "en-GB",
   };
 }

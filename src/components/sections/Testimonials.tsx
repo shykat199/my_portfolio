@@ -1,33 +1,37 @@
-import { site } from "@content/site";
+import { site, type Testimonial } from "@content/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { TestimonialSlider } from "./TestimonialSlider";
+
+// Shown only on your own computer (npm run dev) while there are no real
+// testimonials yet, so you can see the design. Never shown on the live site.
+const previewItems: Testimonial[] = [
+  { quote: "Sample testimonial. Replace this with real words from a client in content/site.ts.", name: "Sample Client", role: "Owner, Sample Business", rating: 5 },
+  { quote: "A second sample, so you can see the slider move between quotes of different lengths, with the arrows and dots.", name: "Another Sample", role: "Manager, Example Company", rating: 5 },
+  { quote: "A third sample testimonial.", name: "Third Sample", role: "Founder, Placeholder Ltd" },
+];
 
 export function Testimonials() {
   const { testimonials } = site;
+  const preview = testimonials.items.length === 0 && process.env.NODE_ENV === "development";
+  const items = preview ? previewItems : testimonials.items;
 
-  if (testimonials.items.length === 0) return null;
+  if (items.length === 0) return null;
 
   return (
     <section id="testimonials" className="wrap section-y">
-      <SectionHeading eyebrow={testimonials.eyebrow} title={testimonials.title} />
+      <SectionHeading eyebrow={testimonials.eyebrow} title={testimonials.title} intro={testimonials.intro} />
 
-      <ul className="mt-12 grid gap-8 md:grid-cols-2">
-        {testimonials.items.map((testimonial) => (
-          <li key={testimonial.name}>
-            <Reveal>
-              <figure className="border-t border-fg/25 pt-6">
-                <blockquote className="font-serif text-2xl leading-snug">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </blockquote>
-                <figcaption className="mt-5 text-sm">
-                  <span className="font-medium">{testimonial.name}</span>
-                  <span className="block text-muted">{testimonial.role}</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          </li>
-        ))}
-      </ul>
+      {preview && (
+        <p className="mt-6 inline-block rounded-lg border border-warm/40 bg-warm/10 px-4 py-2 text-sm text-warm">
+          Preview only: these are sample testimonials. This section stays hidden on the live site until you add real
+          ones in content/site.ts.
+        </p>
+      )}
+
+      <Reveal>
+        <TestimonialSlider items={items} />
+      </Reveal>
     </section>
   );
 }

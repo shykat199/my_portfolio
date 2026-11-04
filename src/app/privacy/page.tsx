@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       <JsonLd
         nodes={[webPageNode({ path: "/privacy", name: privacy.title, description: privacy.description })]}
       />
-      <h1 className="text-[2.75rem] leading-[1.06] sm:text-6xl">{privacy.title}</h1>
+      <h1 className="type-display">{privacy.title}</h1>
       <p className="mt-4 text-muted">Last updated: {privacy.updated}</p>
 
       <div className="mt-12 space-y-10">

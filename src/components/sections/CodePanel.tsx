@@ -29,7 +29,7 @@ export function CodePanel() {
     <figure
       role="img"
       aria-label={code.description}
-      className="overflow-hidden rounded-2xl border border-fg/10 bg-code font-mono text-[0.8rem] leading-[1.8] text-fg shadow-[0_30px_80px_-30px_rgb(94_224_174/0.35)] sm:text-sm sm:leading-[1.8]"
+      className="overflow-hidden rounded-2xl border border-fg/10 bg-code font-mono text-[0.8rem] leading-[1.8] text-fg max-[359px]:text-[0.72rem] shadow-[0_30px_80px_-30px_rgb(94_224_174/0.35)] sm:text-sm sm:leading-[1.8]"
     >
       <div className="flex items-center gap-2 border-b border-fg/10 px-4 py-3">
         <span className="size-2.5 rounded-full bg-error" />
@@ -38,7 +38,7 @@ export function CodePanel() {
         <span className="ml-2 text-xs text-code-comment">{code.fileName}</span>
       </div>
 
-      <ol className="px-4 py-5 sm:px-5">
+      <ol className="overflow-x-auto px-4 py-5 sm:px-5">
         {lines.map((line, index) => (
           <li key={index} style={lineStyle(index)} className="code-line flex whitespace-pre">
             <span className="hidden w-8 shrink-0 text-code-comment/70 select-none sm:block">{index + 1}</span>

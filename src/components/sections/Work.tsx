@@ -8,7 +8,7 @@ export function Work() {
   const { work } = site;
 
   return (
-    <section id="work" className="border-y border-line bg-raised">
+    <section id="work" className="border-y border-line bg-raised/80">
       <div className="wrap section-y">
         <SectionHeading eyebrow={work.eyebrow} title={work.title} intro={work.intro} />
 

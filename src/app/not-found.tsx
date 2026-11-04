@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <div className="wrap section-y">
-      <h1 className="max-w-2xl text-[2.75rem] leading-[1.06] sm:text-6xl">{notFound.title}</h1>
+      <h1 className="max-w-2xl type-display">{notFound.title}</h1>
       <p className="mt-5 text-lg text-muted">{notFound.text}</p>
-      <Button href="/" className="mt-8">
+      <Button href="/" icon="arrow" className="mt-8">
         {notFound.link}
       </Button>
 

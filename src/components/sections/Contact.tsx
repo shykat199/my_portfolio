@@ -8,15 +8,15 @@ export function Contact() {
   const { contact, cta, links, email } = site;
 
   return (
-    <section id="contact" className="border-t border-line bg-raised">
+    <section id="contact" className="border-t border-line bg-raised/80">
       <div className="wrap section-y grid gap-10 md:grid-cols-12 md:gap-14">
         <Reveal className="md:col-span-5">
           <p className="font-mono text-[0.8rem] font-medium text-accent">{contact.eyebrow}</p>
-          <h2 className="mt-3 text-4xl leading-[1.1] sm:text-5xl">{contact.title}</h2>
+          <h2 className="mt-3 type-section">{contact.title}</h2>
           <p className="mt-5 text-lg leading-relaxed text-muted">{contact.text}</p>
 
           {links.booking && (
-            <Button href={bookingHref} className="mt-8">
+            <Button href={bookingHref} icon="calendar" className="mt-8">
               {cta.hero}
             </Button>
           )}

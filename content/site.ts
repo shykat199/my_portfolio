@@ -62,24 +62,66 @@ export type Testimonial = {
   quote: string;
   name: string;
   role: string;
+  /** Optional star rating out of 5, only if the client actually gave one. */
+  rating?: number;
+};
+
+export type Job = {
+  role: string;
+  company: string;
+  companyUrl?: string;
+  /** For example "Full-time", "Part-time", "Contract" or "Freelance". */
+  type: string;
+  location?: string;
+  /** For example "Jan 2024". */
+  start: string;
+  /** Leave this out for the job you are doing now. It then shows as "Present". */
+  end?: string;
+  summary: string;
+  highlights: string[];
+  tech: string[];
 };
 
 export const site = {
   name: "Shykat Roy",
   initials: "SR",
   url: "https://shykatroy.com",
-  email: "hello@shykatroy.com",
+  email: "shykatroy1@gmail.com",
+  // WhatsApp number in international format, digits only (e.g. "8801712345678").
+  // The floating WhatsApp button stays hidden until this is filled in.
+  whatsapp: {
+    number: "8801317120335",
+    message: "Hi Shykat, I found your website and would like to talk about a project.",
+    label: "Chat on WhatsApp",
+  },
+  backToTop: "Back to top",
   jobTitle: "Full-Stack Web Developer",
-  skills: ["React", "Next.js"],
+  // Shown to search engines as the skills you are known for.
+  skills: [
+    "Full-stack web development",
+    "Web application development",
+    "Mobile app development",
+    "PHP",
+    "Laravel",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Node.js",
+    "MySQL",
+    "REST APIs",
+    "Technical SEO",
+    "Website performance optimisation",
+  ],
   languages: ["English", "Bengali"],
   // Change this date when you make big content changes. Search engines read it.
   lastUpdated: "2026-11-01",
   location: { city: "Dhaka", country: "Bangladesh", countryCode: "BD" },
 
   seo: {
-    title: "Web Developer for UK Small Businesses | Shykat Roy",
+    title: "Full-Stack Developer – Laravel, React & Next.js | Shykat Roy",
     description:
-      "Web developer for UK small businesses. Fast, modern websites and online booking that win you more customers, with fixed prices and UK-hours support.",
+      "Freelance full-stack developer (Laravel, React, Next.js, Node.js) building fast, SEO-friendly websites, web apps and mobile apps for businesses worldwide.",
   },
 
   links: {
@@ -94,8 +136,9 @@ export const site = {
     { label: "Services", href: "/#services" },
     { label: "Work", href: "/#work" },
     { label: "Process", href: "/#process" },
+    { label: "Experience", href: "/#experience" },
     { label: "About", href: "/#about" },
-    { label: "FAQ", href: "/#faq" },
+    { label: "Blog", href: "/blog" },
   ],
 
   cta: {
@@ -105,24 +148,33 @@ export const site = {
   },
 
   hero: {
-    eyebrow: "Web developer for UK small businesses",
-    headline: "Fast, modern websites that bring UK businesses more customers.",
+    // The line above the headline. The words are typed out one at a time.
+    eyebrow: {
+      prefix: "I build",
+      words: ["websites", "web apps", "mobile apps", "booking systems", "APIs & back ends"],
+    },
+    // The page's main heading (H1). Google reads it first, so it leads with the
+    // main search phrase and stays unique to this page.
+    headline: "Full-stack web developer for fast, SEO-friendly websites that win more customers.",
     // These words of the headline appear in colour. They must match exactly.
     headlineHighlight: "more customers",
     supporting:
-      "I design and build websites that turn visitors into calls, bookings and enquiries, for a fixed price and with no surprises.",
+      "I'm Shykat Roy, a full-stack web developer who designs and builds custom websites, web applications and mobile apps that turn visitors into calls, bookings and enquiries. Fixed price, no surprises.",
     signature: "Shykat Roy, working with you directly from start to finish",
     // The code panel beside the headline. Keep each value short so it fits on phones.
     code: {
       fileName: "your-website.ts",
       comment: "Built around your business",
       description:
-        "A code editor showing a website described as fast on phones, made for your brand, fixed in price, supported during UK business hours, with the goal of more customers.",
+        "A code editor showing a project that can be a website, web app or mobile app, described as fast on phones, made for your brand, with an optimised database, clean and scalable code, search-engine friendly, with AI chat and automation, with the goal of more customers.",
       entries: [
+        { key: "build", value: "web & mobile apps" },
         { key: "speed", value: "fast on phones" },
         { key: "design", value: "made for your brand" },
-        { key: "price", value: "fixed, no surprises" },
-        { key: "support", value: "UK business hours" },
+        { key: "database", value: "optimised for speed" },
+        { key: "approach", value: "clean, scalable code" },
+        { key: "seo", value: "search-engine friendly" },
+        { key: "ai", value: "AI chat & automation" },
         { key: "goal", value: "more customers" },
       ],
       status: "Ready to launch",
@@ -131,16 +183,16 @@ export const site = {
 
   trust: [
     { title: "3+ years", text: "of professional web development" },
-    { title: "UK hours", text: "available during your working day" },
+    { title: "Always available", text: "support whenever you need it, any time zone" },
     { title: "Fixed prices", text: "agreed up front, with no surprises" },
-    { title: "React & Next.js", text: "the tools behind fast, modern websites" },
+    { title: "Full-stack", text: "React & Next.js front end, PHP Laravel & Node.js back end" },
   ],
 
   services: {
     eyebrow: "Services",
-    title: "Simple packages, clear prices",
+    title: "Web development services with clear prices",
     intro:
-      "Whatever your business does, the aim is the same: more customers and less admin. Pick the package that fits, and I will confirm a fixed price before any work begins.",
+      "From business website design to custom booking systems and ongoing website maintenance, every package is built for more customers and less admin. Pick the one that fits, and I will confirm a fixed price before any work begins.",
     note: "Prices are starting points. Your fixed quote depends on the size of your project.",
     linkLabel: "See full details",
     fromLabel: "From",
@@ -160,10 +212,10 @@ export const site = {
           "Set up to be found on Google",
           "Two rounds of changes",
         ],
-        seoTitle: "Website Design for UK Small Businesses",
-        heading: "Website design for UK small businesses",
+        seoTitle: "Small Business Website Design & Development",
+        heading: "Website design for small businesses",
         intro:
-          "A fast, professional website that wins trust and brings in enquiries, built for your business at a fixed price from £695.",
+          "Professional small business website design and development: fast, mobile-friendly and SEO-ready, built to bring in enquiries. Fixed price from £695.",
         story: [
           "Your website is often the first thing a new customer sees. If it is slow, out of date or hard to use on a phone, they leave and call someone else. I design and build websites that make a good first impression and make it easy for people to get in touch.",
           "You won't get a template with your logo dropped in. Each page is designed around what your customers need to know and the one thing you want them to do next, whether that is calling you, sending an enquiry or visiting you.",
@@ -208,10 +260,10 @@ export const site = {
           "A simple page to manage your bookings",
           "A walkthrough showing you how it all works",
         ],
-        seoTitle: "Booking Websites for UK Small Businesses",
-        heading: "Booking websites for UK small businesses",
+        seoTitle: "Online Booking Website Development",
+        heading: "Booking websites for small businesses",
         intro:
-          "A website where customers book online at any time, with automatic confirmations and reminders. Less admin for you, from £1,295 at a fixed price.",
+          "A custom online booking website where customers book 24/7, with automatic confirmations and reminders. Less admin for you, at a fixed price from £1,295.",
         story: [
           "Every appointment taken by phone or message is time away from your customers, and every missed call may be a lost booking. An online booking website lets people choose a service and a time themselves, even when you are closed.",
           "Your customers get an instant confirmation and a reminder before they arrive, which helps reduce no-shows. You get one simple page showing what is coming up, so there is no need to pay for separate booking apps you don't fully use.",
@@ -255,21 +307,21 @@ export const site = {
           "Reliable hosting",
           "Regular updates and security checks",
           "Up to 1 hour of small changes each month",
-          "Help by email during UK hours",
+          "Help by email, whatever your time zone",
           "No long contract: cancel with 30 days' notice",
         ],
-        seoTitle: "Website Care Plans for UK Small Businesses",
-        heading: "Website care plans for UK small businesses",
+        seoTitle: "Website Maintenance & Care Plans",
+        heading: "Website maintenance and care plans for small businesses",
         intro:
-          "Reliable hosting, updates and small changes for your website, all looked after for a simple monthly price from £49. No long contract.",
+          "Website maintenance made simple: reliable hosting, security updates and small changes, all looked after from £49 a month. No long contract.",
         story: [
           "A website needs looking after, just like your premises. Without regular care, things go out of date, small problems grow and your opening hours or prices stop matching reality.",
-          "The care plan takes all of that off your list. I keep your website online, up to date and secure, and when you need a change you just send me an email. You get a person to talk to during UK hours, not a support ticket.",
+          "The care plan takes all of that off your list. I keep your website online, up to date and secure, and when you need a change you just send me an email. You get a real person to talk to, not a support ticket.",
         ],
         idealFor: [
           "Owners who would rather not think about their website",
           "Businesses that often change prices, menus or opening hours",
-          "Anyone who wants help on hand during UK hours",
+          "Anyone who wants help on hand when they need it",
           "Clients who have had a website built by me",
         ],
         faq: [
@@ -296,9 +348,9 @@ export const site = {
 
   work: {
     eyebrow: "Selected work",
-    title: "The kind of work I do",
+    title: "Web design and development projects",
     intro:
-      "These are demo projects that show how I approach a brief. Each one is clearly labelled.",
+      "Demo website projects that show how I approach a brief, from design to development. Each one is clearly labelled.",
     demoLabel: "Demo project",
     linkLabel: "Read the case study",
     labels: { problem: "Problem", solution: "Solution", result: "Result" },
@@ -443,10 +495,51 @@ export const site = {
     ] satisfies Project[],
   },
 
+  // The tech stack section. Each row scrolls sideways; rows alternate direction.
+  // "color" is the brand colour shown on the small badge beside each name.
+  stack: {
+    eyebrow: "Tech stack",
+    title: "My full-stack development tech stack",
+    intro: "Modern, proven technology for the front end and back end, from React and Next.js to PHP, Laravel and Node.js, chosen to keep your website fast, secure, SEO-friendly and easy to grow.",
+    rows: [
+      [
+        { name: "React", color: "#61dafb" },
+        { name: "Next.js", color: "#ffffff" },
+        { name: "TypeScript", color: "#3178c6" },
+        { name: "JavaScript", color: "#f7df1e" },
+        { name: "Tailwind CSS", color: "#38bdf8" },
+        { name: "HTML5", color: "#e34f26" },
+        { name: "CSS3", color: "#1572b6" },
+        { name: "Framer Motion", color: "#ff4d8d" },
+      ],
+      [
+        { name: "PHP", color: "#777bb4" },
+        { name: "Laravel", color: "#ff2d20" },
+        { name: "Node.js", color: "#5fa04e" },
+        { name: "Express", color: "#cccccc" },
+        { name: "REST APIs", color: "#5ee0ae" },
+        { name: "MySQL", color: "#4479a1" },
+        { name: "PostgreSQL", color: "#4169e1" },
+        { name: "MongoDB", color: "#47a248" },
+        { name: "Redis", color: "#ff4438" },
+      ],
+      [
+        { name: "Git", color: "#f05032" },
+        { name: "GitHub", color: "#ffffff" },
+        { name: "Docker", color: "#2496ed" },
+        { name: "Vercel", color: "#ffffff" },
+        { name: "Linux", color: "#fcc624" },
+        { name: "Nginx", color: "#009639" },
+        { name: "OpenAI API", color: "#10a37f" },
+        { name: "Figma", color: "#f24e1e" },
+      ],
+    ],
+  },
+
   process: {
     eyebrow: "Process",
     title: "Four simple steps",
-    intro: "You will always know what is happening, what comes next and what it costs.",
+    intro: "A clear web development process: you will always know what is happening, what comes next and what it costs.",
     steps: [
       {
         title: "Free call",
@@ -477,39 +570,88 @@ export const site = {
       height: 626,
     },
     story: [
-      "I'm a full-stack web developer with more than 3 years of professional experience. I'm based in Dhaka, Bangladesh, and I work with UK businesses during UK business hours.",
-      "I started freelancing because small businesses deserve websites as good as the big names have, without agency prices or confusing jargon.",
+      "I'm a full-stack web developer with more than 3 years of professional experience building websites and web applications with PHP, Laravel, React, Next.js and Node.js. I'm based in Dhaka, Bangladesh, and I work remotely with businesses all over the world, fitting around your time zone.",
+      "I started freelancing because small businesses deserve fast, secure, search-engine-friendly websites as good as the big names have, without agency prices or confusing jargon.",
     ],
     reasonsTitle: "Why you can rely on me",
     reasons: [
       "You work directly with me, from the first call to launch and beyond",
-      "You get a fixed price in pounds before any work begins",
+      "You get one fixed price before any work begins",
       "You see progress every week, so there are no surprises",
-      "I reply during your working day, not in the middle of the night",
+      "I reply during your working day, wherever you are",
     ],
+  },
+
+  career: {
+    eyebrow: "Experience",
+    title: "Full-stack developer experience",
+    intro: "My professional journey so far, with my current role first.",
+    present: "Present",
+    current: "Now",
+    // This section stays hidden until you add at least one job here, newest first, like:
+    // {
+    //   role: "Full-Stack Developer",
+    //   company: "Company name",
+    //   companyUrl: "https://company.com",
+    //   type: "Full-time",
+    //   location: "Dhaka, Bangladesh",
+    //   start: "Jan 2024",
+    //   summary: "One or two sentences about what you do there.",
+    //   highlights: ["Something you built or improved", "Another achievement"],
+    //   tech: ["Laravel", "React", "MySQL"],
+    // },
+    jobs: [
+      {
+        role: "Full-Stack Developer",
+        company: "PFEC Global",
+        companyUrl: "https://www.pfecglobal.com",
+        type: "Full-time",
+        start: "2025",
+        summary:
+          "Building and maintaining the company's web applications across the front end and back end, from user-facing pages to APIs and databases.",
+        highlights: [],
+        tech: ["PHP", "Laravel", "Node.js", "React", "Next.js", "MySQL"],
+      },
+      {
+        role: "Full-Stack Developer",
+        company: "Appsinception",
+        type: "Full-time",
+        start: "2023",
+        end: "2025",
+        summary:
+          "Developed web applications for clients, working on both the front end and the back end.",
+        highlights: [],
+        tech: ["PHP", "Laravel", "React", "MySQL"],
+      },
+    ] as Job[],
   },
 
   testimonials: {
     eyebrow: "Testimonials",
     title: "What clients say",
+    intro: "Feedback from businesses I have built websites and apps for.",
     // This section stays hidden until you add a real testimonial here, like:
-    // { quote: "Their words here.", name: "Their name", role: "Owner, Business name" },
+    // { quote: "Their words here.", name: "Their name", role: "Owner, Business name", rating: 5 },
     items: [] as Testimonial[],
   },
 
   faq: {
     eyebrow: "FAQ",
-    title: "Good questions, plain answers",
+    title: "Frequently asked questions",
+    intro: "Quick answers about pricing, timelines, technology and working together.",
+    askTitle: "Still have a question?",
+    askText: "Send me a message and I will reply within one working day.",
+    askLabel: "Ask me directly",
     items: [
       {
         question: "How do payments work?",
         answer:
-          "You pay 50% up front to book your project and the remaining 50% when your website is ready to launch. All prices are fixed and paid in pounds (GBP).",
+          "You pay 50% up front to book your project and the remaining 50% when your website is ready to launch. All prices are fixed and agreed before any work begins.",
       },
       {
         question: "What about the time difference?",
         answer:
-          "It won't affect you. I'm based in Dhaka, but I work during UK business hours, so you can reach me during your normal working day.",
+          "It won't affect you. I'm based in Dhaka, Bangladesh, and I work with clients across many time zones. I adjust my hours so you can reach me during your normal working day.",
       },
       {
         question: "Who owns the website and code?",
@@ -520,6 +662,31 @@ export const site = {
         question: "How long does a project take?",
         answer:
           "A business website usually takes 2 to 3 weeks, and a website with online booking usually takes 4 to 5 weeks. I will confirm your timeline in your quote.",
+      },
+      {
+        question: "What technologies do you use?",
+        answer:
+          "I'm a full-stack developer. On the front end I use React, Next.js, TypeScript and Tailwind CSS. On the back end I use PHP, Laravel and Node.js, with databases such as MySQL and PostgreSQL. I pick the right tools for your project, not the other way round.",
+      },
+      {
+        question: "Will my website be SEO-friendly?",
+        answer:
+          "Yes. Every website I build is fast, mobile-friendly and set up for search engines, with clean page structure, proper titles and descriptions, structured data and a sitemap, so Google can find and understand your business.",
+      },
+      {
+        question: "Do you work with clients outside Bangladesh?",
+        answer:
+          "Yes. I work remotely with businesses all over the world, including the UK, Europe, North America and Australia. We talk by email, video call or WhatsApp at times that suit you.",
+      },
+      {
+        question: "Do you build web apps and mobile apps?",
+        answer:
+          "Yes. As well as websites, I build custom web applications such as dashboards, booking systems and customer portals, and mobile apps for iPhone and Android. The same back end can power your website, web app and mobile app together.",
+      },
+      {
+        question: "Can you add AI features to my website?",
+        answer:
+          "Yes. I can add AI-powered features such as a chat assistant that answers customer questions, or automation that saves you time on routine tasks.",
       },
       {
         question: "Do you offer support after launch?",
@@ -541,6 +708,14 @@ export const site = {
       business: "Business name",
       website: "Website (optional)",
       message: "How can I help?",
+    },
+    // Example text shown inside each empty field.
+    placeholders: {
+      name: "e.g. Sarah Thompson",
+      email: "e.g. sarah@yourbusiness.com",
+      business: "e.g. Thompson Plumbing",
+      website: "e.g. yourbusiness.com",
+      message: "Tell me a little about your business and what you need, e.g. a new website, online booking or help with an existing site.",
     },
     submit: "Send message",
     sending: "Sending...",
@@ -569,13 +744,14 @@ export const site = {
     home: "Home",
     services: "Services",
     work: "Work",
+    blog: "Blog",
   },
 
   servicePage: {
     whoFor: "Who it's for",
     included: "What's included",
     price: "Price",
-    priceNote: "One fixed price, agreed before any work begins and paid in pounds.",
+    priceNote: "One fixed price, agreed before any work begins.",
     process: "How it works",
     related: "Related work",
     faq: "Frequently asked questions",
@@ -605,13 +781,13 @@ export const site = {
       {
         title: "Why I collect it",
         body: [
-          "I use your details only to reply to your enquiry and to talk with you about your project. My lawful basis under UK GDPR is legitimate interests, because you have asked me to get in touch. I never sell your details or add you to a mailing list.",
+          "I use your details only to reply to your enquiry and to talk with you about your project. My lawful basis under data protection laws such as the GDPR is legitimate interests, because you have asked me to get in touch. I never sell your details or add you to a mailing list.",
         ],
       },
       {
         title: "Who handles it",
         body: [
-          "Form messages are delivered by Resend, an email service, and this website is hosted by Vercel. I use Vercel Web Analytics to count page visits. It does not use cookies or identify individual visitors. These companies may process data outside the UK, including in the United States, under their own data protection safeguards. I read and store your messages from Bangladesh.",
+          "Form messages are delivered by Resend, an email service, and this website is hosted by Vercel. I use Vercel Web Analytics to count page visits. It does not use cookies or identify individual visitors. These companies may process data in other countries, including the United States, under their own data protection safeguards. I read and store your messages from Bangladesh.",
         ],
       },
       {
@@ -623,8 +799,8 @@ export const site = {
       {
         title: "Your rights and data deletion",
         body: [
-          "You can ask to see, correct or delete your information at any time. Email hello@shykatroy.com with the subject line \"Data request\" and I will respond within one month.",
-          "If you are unhappy with how your data has been handled, please contact me first. You also have the right to complain to the UK Information Commissioner's Office at ico.org.uk.",
+          "You can ask to see, correct or delete your information at any time. Email shykatroy1@gmail.com with the subject line \"Data request\" and I will respond within one month.",
+          "If you are unhappy with how your data has been handled, please contact me first. You also have the right to complain to the data protection authority in your country.",
         ],
       },
       {
@@ -650,7 +826,7 @@ export const site = {
   },
 
   footer: {
-    tagline: "Websites for UK small businesses.",
+    tagline: "Websites for businesses worldwide.",
     servicesLabel: "Services",
     privacy: "Privacy policy",
     rights: "All rights reserved.",

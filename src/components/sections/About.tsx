@@ -6,7 +6,7 @@ export function About() {
   const { about } = site;
 
   return (
-    <section id="about" className="border-y border-line bg-raised">
+    <section id="about" className="border-y border-line bg-raised/80">
       <div className="wrap section-y grid gap-10 md:grid-cols-12 md:gap-14">
         <Reveal className="md:col-span-5">
           <Image
@@ -21,7 +21,7 @@ export function About() {
 
         <Reveal className="md:col-span-7">
           <p className="font-mono text-[0.8rem] font-medium text-accent">{about.eyebrow}</p>
-          <h2 className="mt-3 text-4xl leading-[1.1] sm:text-5xl">{about.title}</h2>
+          <h2 className="mt-3 type-section">{about.title}</h2>
           <div className="mt-5 space-y-4 text-lg leading-relaxed text-muted">
             {about.story.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>

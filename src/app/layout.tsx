@@ -6,8 +6,12 @@ import type { ReactNode } from "react";
 import { site } from "@content/site";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { FloatingActions } from "@/components/ui/FloatingActions";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { MotionProvider } from "@/components/ui/MotionProvider";
+import { NodeField } from "@/components/ui/NodeField";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { SmoothDetails } from "@/components/ui/SmoothDetails";
 import { siteGraph } from "@/lib/schema";
 import "./globals.css";
 
@@ -67,10 +71,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Skip to content
         </a>
         <JsonLd nodes={siteGraph} />
+        <NodeField />
         <MotionProvider>
+          <ScrollProgress />
           <Header />
           <main id="main" className="pt-20">{children}</main>
           <Footer />
+          <FloatingActions />
+          <SmoothDetails />
         </MotionProvider>
         <Analytics />
       </body>

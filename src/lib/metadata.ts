@@ -8,6 +8,8 @@ type PageMetadataOptions = {
   /** Skips the " | Shykat Roy" ending when the title already includes it. */
   absoluteTitle?: boolean;
   type?: "website" | "article";
+  /** Only for articles. */
+  article?: { publishedTime: string; modifiedTime?: string; tags?: string[] };
 };
 
 export function pageMetadata({
@@ -16,6 +18,7 @@ export function pageMetadata({
   path,
   absoluteTitle,
   type = "website",
+  article,
 }: PageMetadataOptions): Metadata {
   const shareTitle = absoluteTitle ? title : `${title} | ${site.name}`;
 
@@ -30,6 +33,9 @@ export function pageMetadata({
       url: path,
       title: shareTitle,
       description,
+      ...(type === "article" && article
+        ? { publishedTime: article.publishedTime, modifiedTime: article.modifiedTime, tags: article.tags, authors: [site.name] }
+        : {}),
     },
     twitter: { card: "summary_large_image", title: shareTitle, description },
   };

@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { site } from "@content/site";
 import { About } from "@/components/sections/About";
+import { Career } from "@/components/sections/Career";
 import { Contact } from "@/components/sections/Contact";
 import { Faq } from "@/components/sections/Faq";
 import { Hero } from "@/components/sections/Hero";
+import { LatestPosts } from "@/components/sections/LatestPosts";
 import { Process } from "@/components/sections/Process";
 import { Services } from "@/components/sections/Services";
+import { TechStack } from "@/components/sections/TechStack";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import { Work } from "@/components/sections/Work";
@@ -36,9 +39,12 @@ export default function Home() {
       <TrustStrip />
       <Services />
       <Work />
+      <TechStack />
       <Process />
+      <Career />
       <About />
       <Testimonials />
+      <LatestPosts />
       <Faq />
       <Contact />
     </>

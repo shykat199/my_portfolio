@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@content/site";
+import { Process } from "@/components/sections/Process";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { FaqList } from "@/components/ui/FaqList";
@@ -43,7 +44,7 @@ export default async function ServicePage({ params }: PageProps) {
   const service = getService(slug);
   if (!service) notFound();
 
-  const { servicePage, process, breadcrumbs, cta, services, work } = site;
+  const { servicePage, breadcrumbs, cta, services, work } = site;
   const path = `/services/${service.slug}`;
   const crumbs: Crumb[] = [
     { label: breadcrumbs.home, href: "/" },
@@ -71,11 +72,13 @@ export default async function ServicePage({ params }: PageProps) {
 
       <header className="wrap pt-10 pb-12 md:pt-14 md:pb-16">
         <Breadcrumbs crumbs={crumbs} />
-        <h1 className="mt-8 max-w-4xl text-[2.75rem] leading-[1.06] sm:text-6xl">{service.heading}</h1>
+        <h1 className="mt-8 max-w-4xl type-display">{service.heading}</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">{service.intro}</p>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <Button href={bookingHref}>{cta.hero}</Button>
-          <Button href="/#contact" variant="secondary">
+          <Button href={bookingHref} icon="calendar">
+            {cta.hero}
+          </Button>
+          <Button href="/#contact" variant="secondary" icon="arrow">
             {site.contact.formTitle}
           </Button>
         </div>
@@ -136,24 +139,15 @@ export default async function ServicePage({ params }: PageProps) {
         </section>
       </div>
 
-      <section aria-labelledby="how" className="border-y border-line bg-raised">
-        <div className="wrap section-y">
+      <Process
+        id="how-it-works"
+        labelledBy="how"
+        heading={
           <h2 id="how" className={headingClass}>
             {servicePage.process}
           </h2>
-          <ol className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-            {process.steps.map((step, index) => (
-              <li key={step.title} className="border-t border-fg/25 pt-5">
-                <p aria-hidden="true" className="font-serif text-xl text-accent">
-                  {index + 1}
-                </p>
-                <h3 className="mt-3 text-2xl leading-tight">{step.title}</h3>
-                <p className="mt-2 leading-relaxed text-muted">{step.text}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+        }
+      />
 
       {projects.length > 0 && (
         <section aria-labelledby="related" className="wrap section-y">
@@ -220,9 +214,9 @@ export default async function ServicePage({ params }: PageProps) {
 
       <section className="border-t border-line bg-raised">
         <div className="wrap section-y">
-          <h2 className="max-w-2xl text-4xl leading-[1.1] sm:text-5xl">{servicePage.ctaTitle}</h2>
+          <h2 className="max-w-2xl type-section">{servicePage.ctaTitle}</h2>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">{servicePage.ctaText}</p>
-          <Button href={bookingHref} className="mt-8">
+          <Button href={bookingHref} icon="calendar" className="mt-8">
             {cta.hero}
           </Button>
         </div>

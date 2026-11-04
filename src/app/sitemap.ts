@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { site } from "@content/site";
+import { posts } from "@/lib/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
@@ -9,8 +10,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/privacy",
   ];
 
-  return paths.map((path) => ({
-    url: `${site.url}${path}`,
-    lastModified: site.lastUpdated,
-  }));
+  return [
+    ...paths.map((path) => ({
+      url: `${site.url}${path}`,
+      lastModified: site.lastUpdated,
+    })),
+    { url: `${site.url}/blog`, lastModified: posts[0]?.updated ?? posts[0]?.published ?? site.lastUpdated },
+    ...posts.map((post) => ({
+      url: `${site.url}/blog/${post.slug}`,
+      lastModified: post.updated ?? post.published,
+    })),
+  ];
 }
