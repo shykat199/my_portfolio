@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { site, type Project } from "@content/site";
+import { site } from "@content/site";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Reveal } from "@/components/ui/Reveal";
 import { bookingHref } from "@/lib/booking";
 import { pageMetadata } from "@/lib/metadata";
-import { getProject } from "@/lib/projects";
+import { getProject, getProjects } from "@/lib/projects";
 import { breadcrumbNode, caseStudyNode, webPageNode, type Crumb } from "@/lib/schema";
 import { getService } from "@/lib/services";
 
@@ -17,28 +17,26 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Only the slugs in content/site.ts exist. Anything else is a real 404.
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return site.work.projects.map((project) => ({ slug: project.slug }));
+// Projects added in the admin panel after the last build are rendered the first time they are visited.
+export async function generateStaticParams() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProject(slug);
   if (!project) return {};
 
-  return pageMetadata({
-    title: projectTitle(project),
-    description: project.overview,
-    path: `/work/${project.slug}`,
-    type: "article",
-  });
-}
-
-function projectTitle(project: Project) {
-  return project.isDemo ? `${project.title} (demo)` : project.title;
+  return {
+    ...pageMetadata({
+      title: project.seo.title,
+      description: project.seo.description,
+      path: `/work/${project.slug}`,
+      type: "article",
+    }),
+    keywords: project.seo.keywords,
+  };
 }
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
@@ -65,12 +63,12 @@ function List({ items }: { items: string[] }) {
 
 export default async function CaseStudyPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProject(slug);
   if (!project) notFound();
 
   const { caseStudy, work, cta, breadcrumbs } = site;
   const path = `/work/${project.slug}`;
-  const service = getService(project.relatedService);
+  const service = project.relatedService ? await getService(project.relatedService) : undefined;
   const crumbs: Crumb[] = [
     { label: breadcrumbs.home, href: "/" },
     { label: breadcrumbs.work, href: "/#work" },
@@ -83,8 +81,8 @@ export default async function CaseStudyPage({ params }: PageProps) {
         nodes={[
           webPageNode({
             path,
-            name: projectTitle(project),
-            description: project.overview,
+            name: project.seo.title,
+            description: project.seo.description,
             hasBreadcrumb: true,
           }),
           caseStudyNode(project),
@@ -141,28 +139,30 @@ export default async function CaseStudyPage({ params }: PageProps) {
           )}
         </div>
 
-        <section aria-labelledby="screenshots" className="border-t border-line py-9">
-          <h2 id="screenshots" className="text-2xl leading-tight">
-            {caseStudy.screenshots}
-          </h2>
-          <div className="mt-7 grid gap-8 md:grid-cols-2">
-            {project.screenshots.map((screenshot) => (
-              <Reveal key={screenshot.src}>
-                <figure>
-                  <Image
-                    src={screenshot.src}
-                    alt={screenshot.alt}
-                    width={1600}
-                    height={1000}
-                    sizes="(min-width: 72rem) 530px, (min-width: 48rem) 50vw, 100vw"
-                    className="rounded-lg border border-line"
-                  />
-                  <figcaption className="mt-3 text-sm text-muted">{screenshot.caption}</figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        {project.screenshots.length > 0 && (
+          <section aria-labelledby="screenshots" className="border-t border-line py-9">
+            <h2 id="screenshots" className="text-2xl leading-tight">
+              {caseStudy.screenshots}
+            </h2>
+            <div className="mt-7 grid gap-8 md:grid-cols-2">
+              {project.screenshots.map((screenshot) => (
+                <Reveal key={screenshot.src}>
+                  <figure>
+                    <Image
+                      src={screenshot.src}
+                      alt={screenshot.alt}
+                      width={1600}
+                      height={1000}
+                      sizes="(min-width: 72rem) 530px, (min-width: 48rem) 50vw, 100vw"
+                      className="rounded-lg border border-line"
+                    />
+                    <figcaption className="mt-3 text-sm text-muted">{screenshot.caption}</figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <section className="mt-10 border-t border-line bg-raised">

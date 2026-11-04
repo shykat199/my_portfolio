@@ -13,6 +13,8 @@ import { NodeField } from "@/components/ui/NodeField";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SmoothDetails } from "@/components/ui/SmoothDetails";
 import { siteGraph } from "@/lib/schema";
+import { getServices } from "@/lib/services";
+import { getSettings } from "@/lib/settings";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -50,7 +52,9 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const [services, settings] = await Promise.all([getServices(), getSettings()]);
+
   return (
     <html
       lang="en-GB"
@@ -70,14 +74,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Skip to content
         </a>
-        <JsonLd nodes={siteGraph} />
+        <JsonLd nodes={siteGraph(services, settings)} />
         <NodeField />
         <MotionProvider>
           <ScrollProgress />
-          <Header />
+          <Header logo={settings.logo} />
           <main id="main" className="pt-20">{children}</main>
           <Footer />
-          <FloatingActions />
+          <FloatingActions whatsapp={settings.whatsapp} />
           <SmoothDetails />
         </MotionProvider>
         <Analytics />

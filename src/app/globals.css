@@ -200,3 +200,184 @@ details[open]:not([data-closing]) .faq-icon {
   backdrop-filter: blur(2px) saturate(120%);
   box-shadow: inset 0 1px 0 rgb(237 243 239 / 0.05);
 }
+
+/* Blog articles: the HTML produced from the Markdown written in the admin panel. */
+.blog-prose {
+  color: rgb(237 243 239 / 0.85);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+
+  @media (min-width: 40rem) {
+    font-size: 1.125rem;
+  }
+
+  & > * + * {
+    margin-top: 1.25rem;
+  }
+
+  & h2,
+  & h3,
+  & h4 {
+    color: var(--color-fg);
+    line-height: 1.2;
+    scroll-margin-top: 10rem;
+
+    @media (min-width: 64rem) {
+      scroll-margin-top: 7rem;
+    }
+  }
+
+  & h2 {
+    margin-top: 3.5rem;
+    font-size: 1.875rem;
+
+    @media (min-width: 40rem) {
+      font-size: 2.1rem;
+    }
+  }
+
+  & h2[data-level="1"] {
+    font-size: 2.25rem;
+
+    @media (min-width: 40rem) {
+      font-size: 2.6rem;
+    }
+  }
+
+  & h3 {
+    margin-top: 2.25rem;
+    font-size: 1.5rem;
+  }
+
+  & h4 {
+    margin-top: 2rem;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & strong {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  & a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-color: rgb(94 224 174 / 0.4);
+    text-underline-offset: 4px;
+
+    &:hover {
+      text-decoration-color: var(--color-accent);
+    }
+  }
+
+  & del {
+    opacity: 0.65;
+  }
+
+  & code {
+    border-radius: 0.35rem;
+    background: rgb(237 243 239 / 0.08);
+    padding: 0.12em 0.4em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--color-fg);
+  }
+
+  & pre {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    background: var(--color-code);
+    padding: 1.1rem 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+
+    & code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+  }
+
+  & ul,
+  & ol {
+    padding-left: 1.5rem;
+
+    & li + li {
+      margin-top: 0.6rem;
+    }
+
+    & li::marker {
+      color: var(--color-accent);
+    }
+  }
+
+  & ul {
+    list-style: disc;
+  }
+
+  & ol {
+    list-style: decimal;
+  }
+
+  & blockquote {
+    margin-top: 2rem;
+    border: 1px solid rgb(94 224 174 / 0.3);
+    border-radius: 0.75rem;
+    background: rgb(94 224 174 / 0.07);
+    padding: 1.25rem 1.5rem;
+
+    & > * + * {
+      margin-top: 0.75rem;
+    }
+
+    /* A quote that starts with a bold line is shown as a titled tip box. */
+    & p:first-child > strong:first-child {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--color-accent);
+    }
+  }
+
+  & img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+  }
+
+  & hr {
+    margin-block: 3rem;
+    border-color: var(--color-line);
+  }
+
+  & table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  & th,
+  & td {
+    border: 1px solid var(--color-line);
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+  }
+
+  & th {
+    background: var(--color-raised);
+    color: var(--color-fg);
+  }
+}

@@ -2,17 +2,19 @@ import Link from "next/link";
 import { site } from "@content/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { formatPrice } from "@/lib/services";
+import { formatPrice, getServices } from "@/lib/services";
 
-export function Services() {
+export async function Services() {
   const { services } = site;
+  const items = await getServices();
+  if (items.length === 0) return null;
 
   return (
     <section id="services" className="wrap section-y">
       <SectionHeading eyebrow={services.eyebrow} title={services.title} intro={services.intro} />
 
       <ul className="mt-12 grid gap-5 lg:grid-cols-3">
-        {services.items.map((service, index) => (
+        {items.map((service, index) => (
           <li key={service.name}>
             <Reveal delay={index * 0.08} className="h-full">
               <article className="matte-card flex h-full flex-col rounded-lg border border-line p-7 transition-colors duration-200 hover:border-fg/30">

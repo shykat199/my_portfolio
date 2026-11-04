@@ -1,21 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import { blog, type BlogPost } from "@content/blog";
-import { formatDate, readingMinutes } from "@/lib/blog";
+import { blog, type BlogPostSummary } from "@content/blog";
+import { formatDate } from "@/lib/blog";
 
-export function BlogMeta({ post }: { post: BlogPost }) {
+export function BlogMeta({ post }: { post: BlogPostSummary }) {
   return (
     <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs text-muted">
       <time dateTime={post.published}>{formatDate(post.published)}</time>
       <span aria-hidden="true">·</span>
       <span>
-        {readingMinutes(post)} {blog.labels.minRead}
+        {post.readingMinutes} {blog.labels.minRead}
       </span>
     </p>
   );
 }
 
-export function BlogCover({ post, sizes, priority = false }: { post: BlogPost; sizes: string; priority?: boolean }) {
+type BlogCoverProps = { post: BlogPostSummary; sizes: string; priority?: boolean };
+
+export function BlogCover({ post, sizes, priority = false }: BlogCoverProps) {
+  if (!post.cover) {
+    // No image uploaded yet: a branded panel with the category keeps cards even.
+    return (
+      <div className="blueprint-grid flex aspect-[1200/630] w-full items-center justify-center bg-raised">
+        <span className="font-serif text-3xl text-accent/70">{post.category}</span>
+      </div>
+    );
+  }
+
   return (
     <Image
       src={post.cover.src}
@@ -23,7 +34,7 @@ export function BlogCover({ post, sizes, priority = false }: { post: BlogPost; s
       width={1200}
       height={630}
       sizes={sizes}
-      priority={priority}
+      preload={priority}
       // SVG illustrations are already sharp at any size, so skip resizing them.
       unoptimized={post.cover.src.endsWith(".svg")}
       className="aspect-[1200/630] w-full object-cover"
@@ -31,7 +42,7 @@ export function BlogCover({ post, sizes, priority = false }: { post: BlogPost; s
   );
 }
 
-type BlogCardProps = { post: BlogPost; featured?: boolean; headingLevel?: "h2" | "h3" };
+type BlogCardProps = { post: BlogPostSummary; featured?: boolean; headingLevel?: "h2" | "h3" };
 
 export function BlogCard({ post, featured = false, headingLevel = "h2" }: BlogCardProps) {
   const Heading = headingLevel;

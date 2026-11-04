@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
 import { site } from "@content/site";
-import { posts } from "@/lib/blog";
+import { getPosts } from "@/lib/blog";
+import { getProjects } from "@/lib/projects";
+import { getServices } from "@/lib/services";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [posts, services, projects] = await Promise.all([getPosts(), getServices(), getProjects()]);
   const paths = [
     "",
-    ...site.services.items.map((service) => `/services/${service.slug}`),
-    ...site.work.projects.map((project) => `/work/${project.slug}`),
+    ...services.map((service) => `/services/${service.slug}`),
+    ...projects.map((project) => `/work/${project.slug}`),
     "/privacy",
   ];
 

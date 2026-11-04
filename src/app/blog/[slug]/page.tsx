@@ -12,9 +12,10 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { FaqList } from "@/components/ui/FaqList";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { formatDate, getPost, posts, readingMinutes, relatedPosts, tableOfContents, wordCount } from "@/lib/blog";
+import { formatDate, getPost, getPosts, relatedPosts } from "@/lib/blog";
 import { bookingHref } from "@/lib/booking";
 import { pageMetadata } from "@/lib/metadata";
+import { getSettings } from "@/lib/settings";
 import { blogPostingNode, breadcrumbNode, faqNode, webPageNode, type Crumb } from "@/lib/schema";
 import { formatPrice, getService } from "@/lib/services";
 
@@ -22,27 +23,28 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Only the posts in content/blog.ts exist. Anything else is a real 404.
-export const dynamicParams = false;
-
-export function generateStaticParams() {
+// Posts published after the last build are rendered the first time they are visited.
+export async function generateStaticParams() {
+  const posts = await getPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPost(slug);
   if (!post) return {};
 
   return {
     ...pageMetadata({
-      title: post.seoTitle,
-      description: post.description,
+      // Shown exactly as written in the admin panel, without " | Shykat Roy" added.
+      title: post.seo.title,
+      absoluteTitle: true,
+      description: post.seo.description,
       path: `/blog/${post.slug}`,
       type: "article",
-      article: { publishedTime: post.published, modifiedTime: post.updated, tags: post.tags },
+      article: { publishedTime: post.published, modifiedTime: post.updated ?? undefined, tags: post.tags },
     }),
-    keywords: post.tags,
+    keywords: post.seo.keywords,
     authors: [{ name: site.name, url: site.url }],
   };
 }
@@ -51,7 +53,7 @@ const sideLabel = "font-mono text-xs font-medium tracking-wide text-accent upper
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPost(slug);
   if (!post) notFound();
 
   const { labels } = blog;
@@ -61,16 +63,17 @@ export default async function BlogPostPage({ params }: PageProps) {
     { label: site.breadcrumbs.blog, href: "/blog" },
     { label: post.title },
   ];
-  const headings = tableOfContents(post);
-  const service = post.service ? getService(post.service) : undefined;
-  const related = relatedPosts(post);
+  const headings = post.toc;
+  const service = post.service ? await getService(post.service) : undefined;
+  const related = relatedPosts(post, await getPosts());
+  const { about } = await getSettings();
 
   return (
     <article>
       <JsonLd
         nodes={[
-          webPageNode({ path, name: post.seoTitle, description: post.description, hasBreadcrumb: true }),
-          blogPostingNode(post, wordCount(post)),
+          webPageNode({ path, name: post.seo.title, description: post.seo.description, hasBreadcrumb: true }),
+          blogPostingNode(post),
           breadcrumbNode(path, crumbs),
           ...(post.faq.length > 0 ? [faqNode(path, post.faq)] : []),
         ]}
@@ -87,7 +90,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-line pt-6">
           <div className="flex items-center gap-3">
             <Image
-              src={site.about.photo.src}
+              src={about.photo?.src ?? site.about.photo.src}
               alt=""
               width={88}
               height={88}
@@ -119,15 +122,17 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div>
               <dt className="sr-only">Reading time</dt>
               <dd className="inline text-fg/90">
-                {readingMinutes(post)} {labels.minRead}
+                {post.readingMinutes} {labels.minRead}
               </dd>
             </div>
           </dl>
         </div>
 
-        <figure className="mt-10 overflow-hidden rounded-2xl border border-line">
-          <BlogCover post={post} priority sizes="(min-width: 72rem) 1088px, 100vw" />
-        </figure>
+        {post.cover && (
+          <figure className="mt-10 overflow-hidden rounded-2xl border border-line">
+            <BlogCover post={post} priority sizes="(min-width: 72rem) 1088px, 100vw" />
+          </figure>
+        )}
       </header>
 
       <div className="wrap grid gap-12 pb-20 lg:grid-cols-12 lg:gap-14">
@@ -151,7 +156,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         <div className="min-w-0 lg:order-1 lg:col-span-8">
           <MobileTableOfContents title={labels.toc} headings={headings} />
-          <BlogBody blocks={post.body} />
+          <BlogBody html={post.html} />
 
           <div className="mt-12 border-t border-line pt-6">
             <p className={sideLabel}>{labels.tags}</p>
@@ -200,8 +205,8 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           <aside className="mt-16 flex flex-col gap-5 rounded-lg border border-line p-6 sm:flex-row sm:items-center sm:p-8">
             <Image
-              src={site.about.photo.src}
-              alt={site.about.photo.alt}
+              src={about.photo?.src ?? site.about.photo.src}
+              alt={about.photo?.alt ?? site.about.photo.alt}
               width={160}
               height={160}
               sizes="80px"

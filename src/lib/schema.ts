@@ -13,10 +13,11 @@ import type {
   WebPage,
   WebSite,
 } from "schema-dts";
-import type { BlogPost } from "@content/blog";
+import type { BlogPostSummary } from "@content/blog";
 import { site, type FaqItem, type Project, type Service } from "@content/site";
+import type { SiteSettings } from "./settings";
 
-const { url, about } = site;
+const { url } = site;
 
 export const schemaIds = {
   person: `${url}/#person`,
@@ -56,48 +57,72 @@ function serviceOffer(service: Service) {
   };
 }
 
-const photo: ImageObject = {
-  "@type": "ImageObject",
-  "@id": schemaIds.photo,
-  url: `${url}${about.photo.src}`,
-  contentUrl: `${url}${about.photo.src}`,
-  width: { "@type": "QuantitativeValue", value: about.photo.width, unitCode: "E37" },
-  height: { "@type": "QuantitativeValue", value: about.photo.height, unitCode: "E37" },
-  caption: about.photo.alt,
-};
+/** Turns a site path into a full address; leaves full addresses alone. */
+function absolute(src: string) {
+  return src.startsWith("http") ? src : `${url}${src}`;
+}
 
-const logo: ImageObject = {
-  "@type": "ImageObject",
-  "@id": schemaIds.logo,
-  url: `${url}${logoImage.path}`,
-  contentUrl: `${url}${logoImage.path}`,
-  width: { "@type": "QuantitativeValue", value: logoImage.size, unitCode: "E37" },
-  height: { "@type": "QuantitativeValue", value: logoImage.size, unitCode: "E37" },
-  caption: `${site.name} logo`,
-};
+function photoNode(settings: SiteSettings): ImageObject {
+  const photo = settings.about.photo;
+  return {
+    "@type": "ImageObject",
+    "@id": schemaIds.photo,
+    ...(photo
+      ? {
+          url: absolute(photo.src),
+          contentUrl: absolute(photo.src),
+          width: { "@type": "QuantitativeValue", value: photo.width, unitCode: "E37" },
+          height: { "@type": "QuantitativeValue", value: photo.height, unitCode: "E37" },
+          caption: photo.alt,
+        }
+      : {}),
+  };
+}
 
-const person: Person = {
-  "@type": "Person",
-  "@id": schemaIds.person,
-  name: site.name,
-  jobTitle: site.jobTitle,
-  url: `${url}/`,
-  email: site.email,
-  image: { "@id": schemaIds.photo },
-  sameAs: [site.links.linkedin, site.links.github],
-  knowsAbout: site.skills,
-  knowsLanguage: site.languages,
-};
+function logoNode(settings: SiteSettings): ImageObject {
+  const src = settings.logo ?? `${url}${logoImage.path}`;
+  return {
+    "@type": "ImageObject",
+    "@id": schemaIds.logo,
+    url: src,
+    contentUrl: src,
+    ...(settings.logo
+      ? {}
+      : {
+          width: { "@type": "QuantitativeValue", value: logoImage.size, unitCode: "E37" },
+          height: { "@type": "QuantitativeValue", value: logoImage.size, unitCode: "E37" },
+        }),
+    caption: `${site.name} logo`,
+  };
+}
 
-const catalog: OfferCatalog = {
-  "@type": "OfferCatalog",
-  "@id": schemaIds.catalog,
-  name: site.services.title,
-  itemListElement: site.services.items.map((service) => ({
-    ...serviceOffer(service),
-    itemOffered: { "@id": serviceId(service) },
-  })),
-};
+function personNode(settings: SiteSettings): Person {
+  return {
+    "@type": "Person",
+    "@id": schemaIds.person,
+    name: site.name,
+    jobTitle: site.jobTitle,
+    url: `${url}/`,
+    email: site.email,
+    image: { "@id": schemaIds.photo },
+    // Profiles set in the admin panel tell Google these accounts are yours.
+    sameAs: Object.values(settings.social).filter((link): link is string => Boolean(link)),
+    knowsAbout: site.skills,
+    knowsLanguage: site.languages,
+  };
+}
+
+function catalogNode(services: Service[]): OfferCatalog {
+  return {
+    "@type": "OfferCatalog",
+    "@id": schemaIds.catalog,
+    name: site.services.title,
+    itemListElement: services.map((service) => ({
+      ...serviceOffer(service),
+      itemOffered: { "@id": serviceId(service) },
+    })),
+  };
+}
 
 const business: ProfessionalService = {
   "@type": "ProfessionalService",
@@ -121,7 +146,9 @@ const business: ProfessionalService = {
 };
 
 /** Connected to every page's graph through the @id references above. */
-export const siteGraph: Thing[] = [person, photo, logo, business, catalog];
+export function siteGraph(services: Service[], settings: SiteSettings): Thing[] {
+  return [personNode(settings), photoNode(settings), logoNode(settings), business, catalogNode(services)];
+}
 
 export const websiteNode: WebSite = {
   "@type": "WebSite",
@@ -189,7 +216,7 @@ export function serviceNode(service: Service): ServiceSchema {
     "@type": "Service",
     "@id": serviceId(service),
     name: service.name,
-    description: service.intro,
+    description: service.seo.description,
     url: `${url}/services/${service.slug}`,
     provider: { "@id": schemaIds.business },
     areaServed: "Worldwide",
@@ -204,17 +231,17 @@ export function caseStudyNode(project: Project): CreativeWork {
     "@type": "CreativeWork",
     "@id": `${page}#casestudy`,
     name: project.title,
-    description: project.overview,
+    description: project.seo.description,
     url: page,
-    image: `${url}${project.cover.src}`,
+    image: project.cover.src,
     author: { "@id": schemaIds.person },
     dateCreated: project.year,
-    keywords: project.tech.join(", "),
+    keywords: project.seo.keywords.join(", "),
     ...(project.isDemo ? { creativeWorkStatus: "Demo" } : {}),
   };
 }
 
-export function blogNode(path: string, name: string, description: string, items: BlogPost[]): Blog {
+export function blogNode(path: string, name: string, description: string, items: BlogPostSummary[]): Blog {
   const page = pageUrl(path);
 
   return {
@@ -229,25 +256,25 @@ export function blogNode(path: string, name: string, description: string, items:
   };
 }
 
-export function blogPostingNode(post: BlogPost, words: number): BlogPosting {
+export function blogPostingNode(post: BlogPostSummary): BlogPosting {
   const page = `${url}/blog/${post.slug}`;
 
   return {
     "@type": "BlogPosting",
     "@id": `${page}#article`,
     headline: post.title,
-    description: post.description,
+    description: post.seo.description,
     url: page,
     mainEntityOfPage: { "@id": `${page}#webpage` },
-    image: [`${url}${post.cover.src}`, `${page}/opengraph-image`],
+    image: post.cover ? [post.cover.src, `${page}/opengraph-image`] : `${page}/opengraph-image`,
     datePublished: post.published,
     dateModified: post.updated ?? post.published,
     author: { "@id": schemaIds.person },
     publisher: { "@id": schemaIds.person },
     isPartOf: { "@id": `${url}/blog#blog` },
     articleSection: post.category,
-    keywords: post.tags.join(", "),
-    wordCount: words,
+    keywords: post.seo.keywords.join(", "),
+    wordCount: post.wordCount,
     inLanguage: "en-GB",
   };
 }

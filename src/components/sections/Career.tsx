@@ -1,18 +1,20 @@
 import { site } from "@content/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getExperience } from "@/lib/profile";
 
-export function Career() {
+export async function Career() {
   const { career } = site;
+  const jobs = await getExperience();
 
-  if (career.jobs.length === 0) return null;
+  if (jobs.length === 0) return null;
 
   return (
     <section id="experience" className="wrap section-y">
       <SectionHeading eyebrow={career.eyebrow} title={career.title} intro={career.intro} />
 
       <ol className="relative mt-12 space-y-6 border-l border-fg/15 pl-7 md:ml-3 md:pl-10">
-        {career.jobs.map((job, index) => {
+        {jobs.map((job, index) => {
           const isCurrent = !job.end;
 
           return (

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import type { Testimonial } from "@content/site";
 
@@ -67,7 +68,10 @@ export function TestimonialSlider({ items }: { items: Testimonial[] }) {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <span aria-hidden="true" className="pointer-events-none absolute top-4 right-8 font-serif text-[8rem] leading-none text-accent/15 sm:text-[10rem]">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute top-4 right-8 font-serif text-[8rem] leading-none text-accent/15 sm:text-[10rem]"
+      >
         &rdquo;
       </span>
 
@@ -100,15 +104,19 @@ export function TestimonialSlider({ items }: { items: Testimonial[] }) {
                   ))}
                 </div>
               )}
-              <blockquote className=" max-w-3xl font-serif text-2xl leading-snug sm:text-[1.75rem]">
+              <blockquote className="max-w-3xl font-serif text-2xl leading-snug sm:text-[1.75rem]">
                 &ldquo;{item.quote}&rdquo;
               </blockquote>
               <figcaption className="mt-7 flex items-center gap-3">
                 <span
                   aria-hidden="true"
-                  className="flex size-11 items-center justify-center rounded-full bg-accent/15 font-mono text-sm font-semibold text-accent"
+                  className="flex size-11 items-center justify-center overflow-hidden rounded-full bg-accent/15 font-mono text-sm font-semibold text-accent"
                 >
-                  {initials(item.name)}
+                  {item.photo ? (
+                    <Image src={item.photo} alt="" width={88} height={88} sizes="44px" className="size-full object-cover" />
+                  ) : (
+                    initials(item.name)
+                  )}
                 </span>
                 <span className="text-sm">
                   <span className="block font-medium">{item.name}</span>

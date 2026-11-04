@@ -10,13 +10,14 @@ const { whatsapp } = site;
 const buttonClass =
   "flex size-12 items-center justify-center rounded-full shadow-[0_10px_30px_-8px_rgb(0_0_0/0.6)] transition-transform duration-200 hover:scale-110";
 
-export function FloatingActions() {
+/** `whatsapp` is the number set in the admin panel, or null to hide the button. */
+export function FloatingActions({ whatsapp: number }: { whatsapp: string | null }) {
   const { scrollY } = useScroll();
   const [showTop, setShowTop] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (value) => setShowTop(value > 500));
 
-  const whatsappHref = `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(whatsapp.message)}`;
+  const whatsappHref = `https://wa.me/${number}?text=${encodeURIComponent(whatsapp.message)}`;
 
   return (
     <div className="fixed right-4 bottom-4 z-40 flex flex-col items-center gap-3 sm:right-6 sm:bottom-6">
@@ -53,7 +54,7 @@ export function FloatingActions() {
         )}
       </AnimatePresence>
 
-      {whatsapp.number && (
+      {number && (
         <a
           href={whatsappHref}
           target="_blank"

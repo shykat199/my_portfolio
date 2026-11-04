@@ -5,7 +5,7 @@ import { BlogCard } from "@/components/blog/BlogCard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Reveal } from "@/components/ui/Reveal";
-import { posts } from "@/lib/blog";
+import { getPosts } from "@/lib/blog";
 import { pageMetadata } from "@/lib/metadata";
 import { blogNode, breadcrumbNode, webPageNode, type Crumb } from "@/lib/schema";
 
@@ -17,7 +17,8 @@ export const metadata: Metadata = pageMetadata({
   path,
 });
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getPosts();
   const crumbs: Crumb[] = [{ label: site.breadcrumbs.home, href: "/" }, { label: site.breadcrumbs.blog }];
   const [latest, ...rest] = posts;
 
@@ -39,6 +40,8 @@ export default function BlogPage() {
       </header>
 
       <section aria-label={blog.labels.allPosts} className="wrap pb-24">
+        {!latest && <p className="text-lg text-muted">{blog.labels.empty}</p>}
+
         {latest && (
           <Reveal>
             <BlogCard post={latest} featured />

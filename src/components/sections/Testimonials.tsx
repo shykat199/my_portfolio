@@ -1,6 +1,7 @@
 import { site, type Testimonial } from "@content/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getTestimonials } from "@/lib/home";
 import { TestimonialSlider } from "./TestimonialSlider";
 
 // Shown only on your own computer (npm run dev) while there are no real
@@ -11,10 +12,11 @@ const previewItems: Testimonial[] = [
   { quote: "A third sample testimonial.", name: "Third Sample", role: "Founder, Placeholder Ltd" },
 ];
 
-export function Testimonials() {
+export async function Testimonials() {
   const { testimonials } = site;
-  const preview = testimonials.items.length === 0 && process.env.NODE_ENV === "development";
-  const items = preview ? previewItems : testimonials.items;
+  const real = await getTestimonials();
+  const preview = real.length === 0 && process.env.NODE_ENV === "development";
+  const items = preview ? previewItems : real;
 
   if (items.length === 0) return null;
 
@@ -25,7 +27,7 @@ export function Testimonials() {
       {preview && (
         <p className="mt-6 inline-block rounded-lg border border-warm/40 bg-warm/10 px-4 py-2 text-sm text-warm">
           Preview only: these are sample testimonials. This section stays hidden on the live site until you add real
-          ones in content/site.ts.
+          ones in the admin panel.
         </p>
       )}
 

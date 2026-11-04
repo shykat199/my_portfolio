@@ -3,9 +3,12 @@ import Link from "next/link";
 import { site } from "@content/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getProjects } from "@/lib/projects";
 
-export function Work() {
+export async function Work() {
   const { work } = site;
+  const projects = await getProjects();
+  if (projects.length === 0) return null;
 
   return (
     <section id="work" className="border-y border-line bg-raised/80">
@@ -13,7 +16,7 @@ export function Work() {
         <SectionHeading eyebrow={work.eyebrow} title={work.title} intro={work.intro} />
 
         <ul className="mt-12 space-y-14 md:space-y-20">
-          {work.projects.map((project, index) => (
+          {projects.map((project, index) => (
             <li key={project.slug}>
               <Reveal>
                 <article className="grid items-center gap-7 md:grid-cols-12 md:gap-10">

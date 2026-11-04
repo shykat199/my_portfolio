@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -40,7 +41,7 @@ function NavIcon({ id, className }: { id: string; className: string }) {
   );
 }
 
-export function Header() {
+export function Header({ logo }: { logo: string | null }) {
   const [open, setOpen] = useState(false);
   const [shrunk, setShrunk] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -118,12 +119,17 @@ export function Header() {
           className="flex shrink-0 items-center rounded-full"
           onClick={() => setOpen(false)}
         >
-          <span
-            aria-hidden="true"
-            className="flex size-10 items-center justify-center rounded-full bg-accent font-mono text-sm font-semibold text-surface"
-          >
-            {site.initials}
-          </span>
+          {logo ? (
+            // The logo uploaded in the admin panel; shown as uploaded (often SVG).
+            <Image src={logo} alt="" width={40} height={40} unoptimized className="size-10 rounded-full object-contain" />
+          ) : (
+            <span
+              aria-hidden="true"
+              className="flex size-10 items-center justify-center rounded-full bg-accent font-mono text-sm font-semibold text-surface"
+            >
+              {site.initials}
+            </span>
+          )}
           <span
             aria-hidden="true"
             className={`dock-name inline-block font-serif text-xl max-[379px]:hidden ${shrunk ? "ml-0 max-w-0 opacity-0" : "ml-3 max-w-40 opacity-100"}`}

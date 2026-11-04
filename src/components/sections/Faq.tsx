@@ -2,6 +2,7 @@ import type { FaqItem } from "@content/site";
 import { site } from "@content/site";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { getFaqs } from "@/lib/home";
 
 function FaqCard({ item, number }: { item: FaqItem; number: number }) {
   return (
@@ -29,11 +30,14 @@ function FaqCard({ item, number }: { item: FaqItem; number: number }) {
   );
 }
 
-export function Faq() {
+export async function Faq() {
   const { faq } = site;
+  const items = await getFaqs();
+  if (items.length === 0) return null;
+
   // Two independent columns, so opening one answer never shifts the other column.
-  const half = Math.ceil(faq.items.length / 2);
-  const columns = [faq.items.slice(0, half), faq.items.slice(half)];
+  const half = Math.ceil(items.length / 2);
+  const columns = [items.slice(0, half), items.slice(half)];
 
   return (
     <section id="faq" className="wrap section-y">

@@ -1,26 +1,30 @@
 import Image from "next/image";
 import { site } from "@content/site";
 import { Reveal } from "@/components/ui/Reveal";
+import { getSettings } from "@/lib/settings";
 
-export function About() {
-  const { about } = site;
+export async function About() {
+  const { eyebrow } = site.about;
+  const { about } = await getSettings();
 
   return (
     <section id="about" className="border-y border-line bg-raised/80">
       <div className="wrap section-y grid gap-10 md:grid-cols-12 md:gap-14">
-        <Reveal className="md:col-span-5">
-          <Image
-            src={about.photo.src}
-            alt={about.photo.alt}
-            width={about.photo.width}
-            height={about.photo.height}
-            sizes="(min-width: 72rem) 440px, (min-width: 48rem) 40vw, 100vw"
-            className="aspect-square w-full rounded-lg object-cover"
-          />
-        </Reveal>
+        {about.photo && (
+          <Reveal className="md:col-span-5">
+            <Image
+              src={about.photo.src}
+              alt={about.photo.alt}
+              width={about.photo.width}
+              height={about.photo.height}
+              sizes="(min-width: 72rem) 440px, (min-width: 48rem) 40vw, 100vw"
+              className="aspect-square w-full rounded-lg object-cover"
+            />
+          </Reveal>
+        )}
 
         <Reveal className="md:col-span-7">
-          <p className="font-mono text-[0.8rem] font-medium text-accent">{about.eyebrow}</p>
+          <p className="font-mono text-[0.8rem] font-medium text-accent">{eyebrow}</p>
           <h2 className="mt-3 type-section">{about.title}</h2>
           <div className="mt-5 space-y-4 text-lg leading-relaxed text-muted">
             {about.story.map((paragraph) => (

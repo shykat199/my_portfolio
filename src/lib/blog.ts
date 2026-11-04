@@ -1,35 +1,23 @@
-import { blog, type BlogBlock, type BlogPost } from "@content/blog";
+import type { BlogPost, BlogPostSummary } from "@content/blog";
+import type { FaqItem } from "@content/site";
+import { fetchFromApi, fetchListFromApi } from "./api";
 
-/** Newest first. */
-export const posts = [...blog.posts].sort((a, b) => b.published.localeCompare(a.published));
+type ApiPost = BlogPostSummary & { html?: string; toc?: BlogPost["toc"]; faq?: FaqItem[] };
 
-export function getPost(slug: string) {
-  return posts.find((post) => post.slug === slug);
+/**
+ * All published posts, newest first. If the admin panel can't be reached
+ * this returns an empty list, so the rest of the site keeps working.
+ */
+export function getPosts(): Promise<BlogPostSummary[]> {
+  return fetchListFromApi<ApiPost>("/posts", "posts");
 }
 
-/** Turns a heading into a URL-friendly id, e.g. "What is it?" -> "what-is-it". */
-export function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
+/** One published post, or undefined if there is no such post. */
+export async function getPost(slug: string): Promise<BlogPost | undefined> {
+  const post = await fetchFromApi<ApiPost>(`/posts/${encodeURIComponent(slug)}`, "posts");
+  if (!post) return undefined;
 
-function blockText(block: BlogBlock) {
-  return block.type === "list" ? block.items.join(" ") : block.text;
-}
-
-export function wordCount(post: BlogPost) {
-  return post.body.map(blockText).join(" ").split(/\s+/).filter(Boolean).length;
-}
-
-/** About 200 words a minute, never less than 1. */
-export function readingMinutes(post: BlogPost) {
-  return Math.max(1, Math.round(wordCount(post) / 200));
-}
-
-export function tableOfContents(post: BlogPost) {
-  return post.body.flatMap((block) => (block.type === "h2" ? [{ id: slugify(block.text), text: block.text }] : []));
+  return { ...post, html: post.html ?? "", toc: post.toc ?? [], faq: post.faq ?? [] };
 }
 
 export function formatDate(date: string) {
@@ -41,9 +29,9 @@ export function formatDate(date: string) {
   });
 }
 
-export function relatedPosts(post: BlogPost, limit = 2) {
-  const shared = (other: BlogPost) => other.tags.filter((tag) => post.tags.includes(tag)).length;
-  return posts
+export function relatedPosts(post: BlogPostSummary, all: BlogPostSummary[], limit = 2) {
+  const shared = (other: BlogPostSummary) => other.tags.filter((tag) => post.tags.includes(tag)).length;
+  return all
     .filter((other) => other.slug !== post.slug)
     .sort((a, b) => shared(b) - shared(a))
     .slice(0, limit);

@@ -3,11 +3,18 @@ import { site } from "@content/site";
 import { Button } from "@/components/ui/Button";
 import { TypedWords } from "@/components/ui/TypedWords";
 import { bookingHref } from "@/lib/booking";
+import { getSettings } from "@/lib/settings";
 import { CodePanel } from "./CodePanel";
 
-export function Hero() {
-  const { hero, cta, about } = site;
-  const [before, after] = hero.headline.split(hero.headlineHighlight);
+export async function Hero() {
+  const { cta } = site;
+  const settings = await getSettings();
+  const { hero } = settings;
+  const photo = settings.about.photo ?? site.about.photo;
+  // Split the headline around the coloured words (if they appear in it).
+  const highlightAt = hero.highlight ? hero.headline.indexOf(hero.highlight) : -1;
+  const before = highlightAt >= 0 ? hero.headline.slice(0, highlightAt) : hero.headline;
+  const after = highlightAt >= 0 ? hero.headline.slice(highlightAt + hero.highlight!.length) : "";
 
   return (
     <section className="relative -mt-20 overflow-hidden">
@@ -21,11 +28,11 @@ export function Hero() {
               <span className="absolute inset-0 animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
               <span className="relative size-2 rounded-full bg-accent" />
             </span>
-            <TypedWords prefix={hero.eyebrow.prefix} words={hero.eyebrow.words} />
+            <TypedWords prefix={hero.prefix} words={hero.words} />
           </p>
           <h1 className="mt-4 type-display sm:mt-5">
             {before}
-            <span className="text-highlight">{hero.headlineHighlight}</span>
+            {highlightAt >= 0 && <span className="text-highlight">{hero.highlight}</span>}
             {after}
           </h1>
           <p className="mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-muted sm:mt-6 sm:text-xl lg:text-lg xl:text-xl">{hero.supporting}</p>
@@ -41,14 +48,14 @@ export function Hero() {
 
           <div className="mt-8 flex items-center gap-3 sm:mt-10 lg:mt-8">
             <Image
-              src={about.photo.src}
-              alt={about.photo.alt}
+              src={photo.src}
+              alt={photo.alt}
               width={96}
               height={96}
               sizes="48px"
               className="size-12 rounded-full object-cover"
             />
-            <p className="max-w-xs text-sm leading-snug text-muted">{hero.signature}</p>
+            <p className="max-w-xs text-sm leading-snug text-muted">{site.hero.signature}</p>
           </div>
         </div>
 

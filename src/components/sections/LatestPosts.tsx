@@ -3,9 +3,10 @@ import { blog } from "@content/blog";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { posts } from "@/lib/blog";
+import { getPosts } from "@/lib/blog";
 
-export function LatestPosts() {
+export async function LatestPosts() {
+  const posts = await getPosts();
   if (posts.length === 0) return null;
   const { labels } = blog;
 

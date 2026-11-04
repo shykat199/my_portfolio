@@ -10,38 +10,40 @@ import { FaqList } from "@/components/ui/FaqList";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { bookingHref } from "@/lib/booking";
 import { pageMetadata } from "@/lib/metadata";
-import { getProject } from "@/lib/projects";
+import { getProjects } from "@/lib/projects";
 import { breadcrumbNode, faqNode, serviceNode, webPageNode, type Crumb } from "@/lib/schema";
-import { formatPrice, getService } from "@/lib/services";
+import { formatPrice, getService, getServices } from "@/lib/services";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Only the slugs in content/site.ts exist. Anything else is a real 404.
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return site.services.items.map((service) => ({ slug: service.slug }));
+// Services added in the admin panel after the last build are rendered the first time they are visited.
+export async function generateStaticParams() {
+  const services = await getServices();
+  return services.map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getService(slug);
   if (!service) return {};
 
-  return pageMetadata({
-    title: service.seoTitle,
-    description: service.intro,
-    path: `/services/${service.slug}`,
-  });
+  return {
+    ...pageMetadata({
+      title: service.seo.title,
+      description: service.seo.description,
+      path: `/services/${service.slug}`,
+    }),
+    keywords: service.seo.keywords,
+  };
 }
 
 const headingClass = "text-3xl leading-tight sm:text-4xl";
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getService(slug);
   if (!service) notFound();
 
   const { servicePage, breadcrumbs, cta, services, work } = site;
@@ -51,8 +53,9 @@ export default async function ServicePage({ params }: PageProps) {
     { label: breadcrumbs.services, href: "/#services" },
     { label: service.name },
   ];
-  const projects = service.relatedProjects.flatMap((projectSlug) => getProject(projectSlug) ?? []);
-  const otherServices = services.items.filter((item) => item.slug !== service.slug);
+  const allProjects = await getProjects();
+  const projects = service.relatedProjects.flatMap((projectSlug) => allProjects.find((project) => project.slug === projectSlug) ?? []);
+  const otherServices = (await getServices()).filter((item) => item.slug !== service.slug);
 
   return (
     <article>
@@ -60,8 +63,8 @@ export default async function ServicePage({ params }: PageProps) {
         nodes={[
           webPageNode({
             path,
-            name: service.seoTitle,
-            description: service.intro,
+            name: service.seo.title,
+            description: service.seo.description,
             hasBreadcrumb: true,
           }),
           serviceNode(service),
@@ -188,29 +191,31 @@ export default async function ServicePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section aria-labelledby="other" className="border-t border-line">
-        <div className="wrap py-14">
-          <h2 id="other" className={headingClass}>
-            {servicePage.other}
-          </h2>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-            {otherServices.map((item) => (
-              <li key={item.slug}>
-                <Link
-                  href={`/services/${item.slug}`}
-                  className="block rounded-lg border border-line p-5 transition-colors hover:border-accent/50"
-                >
-                  <span className="block font-serif text-2xl">{item.name}</span>
-                  <span className="mt-1 block text-sm text-muted">
-                    {services.fromLabel} {formatPrice(item.price)}
-                    {item.priceSuffix}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {otherServices.length > 0 && (
+        <section aria-labelledby="other" className="border-t border-line">
+          <div className="wrap py-14">
+            <h2 id="other" className={headingClass}>
+              {servicePage.other}
+            </h2>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+              {otherServices.map((item) => (
+                <li key={item.slug}>
+                  <Link
+                    href={`/services/${item.slug}`}
+                    className="block rounded-lg border border-line p-5 transition-colors hover:border-accent/50"
+                  >
+                    <span className="block font-serif text-2xl">{item.name}</span>
+                    <span className="mt-1 block text-sm text-muted">
+                      {services.fromLabel} {formatPrice(item.price)}
+                      {item.priceSuffix}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="border-t border-line bg-raised">
         <div className="wrap section-y">

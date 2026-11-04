@@ -14,25 +14,30 @@ import { TrustStrip } from "@/components/sections/TrustStrip";
 import { Work } from "@/components/sections/Work";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { pageMetadata } from "@/lib/metadata";
+import { getFaqs } from "@/lib/home";
 import { faqNode, webPageNode, websiteNode } from "@/lib/schema";
+import { getSettings } from "@/lib/settings";
 
-const { title, description } = site.seo;
+/** The home page's title, description and keywords are set in the admin panel (Site settings). */
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = await getSettings();
 
-export const metadata: Metadata = pageMetadata({
-  title,
-  description,
-  path: "/",
-  absoluteTitle: true,
-});
+  return {
+    ...pageMetadata({ title: seo.title, description: seo.description, path: "/", absoluteTitle: true }),
+    ...(seo.keywords.length > 0 ? { keywords: seo.keywords } : {}),
+  };
+}
 
-export default function Home() {
+export default async function Home() {
+  const [faqs, { seo }] = await Promise.all([getFaqs(), getSettings()]);
+
   return (
     <>
       <JsonLd
         nodes={[
           websiteNode,
-          webPageNode({ path: "/", name: title, description }),
-          faqNode("/", site.faq.items),
+          webPageNode({ path: "/", name: seo.title, description: seo.description }),
+          ...(faqs.length > 0 ? [faqNode("/", faqs)] : []),
         ]}
       />
       <Hero />

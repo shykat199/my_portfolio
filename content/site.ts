@@ -9,6 +9,7 @@ export type FaqItem = {
   answer: string;
 };
 
+/** A service package, as served by the admin panel's API. */
 export type Service = {
   /** The web address: /services/your-slug */
   slug: string;
@@ -16,24 +17,25 @@ export type Service = {
   forWho: string;
   /** Price in pounds, as a plain number. */
   price: number;
-  priceSuffix?: string;
+  priceSuffix?: string | null;
   /** Only for monthly services. Tells search engines the price is per month. */
   billedMonthly?: boolean;
   timeLabel: string;
   time: string;
   includes: string[];
   /** The rest is used on the service's own page. */
-  seoTitle: string;
   heading: string;
-  /** Also used as the page's description in Google. Aim for 120 to 160 characters. */
   intro: string;
   story: string[];
   idealFor: string[];
   faq: FaqItem[];
   /** Case studies to link to, using each project's slug. */
   relatedProjects: string[];
+  /** For search engines. The admin panel fills gaps from the heading, intro and name. */
+  seo: { title: string; description: string; keywords: string[] };
 };
 
+/** A case study, as served by the admin panel's API. */
 export type Project = {
   slug: string;
   title: string;
@@ -43,7 +45,7 @@ export type Project = {
   /** The year the project was made. */
   year: string;
   /** The service this project links to, using the service's slug. */
-  relatedService: string;
+  relatedService?: string | null;
   /** The three short lines on the home page card. */
   problem: string;
   solution: string;
@@ -56,30 +58,43 @@ export type Project = {
   results: string[];
   cover: { src: string; alt: string };
   screenshots: { src: string; alt: string; caption: string }[];
+  /** For search engines. The admin panel fills gaps from the title, overview and tech used. */
+  seo: { title: string; description: string; keywords: string[] };
 };
 
+/** A client testimonial, as served by the admin panel's API. */
 export type Testimonial = {
   quote: string;
   name: string;
   role: string;
   /** Optional star rating out of 5, only if the client actually gave one. */
-  rating?: number;
+  rating?: number | null;
+  /** Full address of an uploaded photo, or null to show initials. */
+  photo?: string | null;
 };
 
+/** A job in the Experience section, as served by the admin panel's API. */
 export type Job = {
   role: string;
   company: string;
-  companyUrl?: string;
+  companyUrl?: string | null;
   /** For example "Full-time", "Part-time", "Contract" or "Freelance". */
   type: string;
-  location?: string;
+  location?: string | null;
   /** For example "Jan 2024". */
   start: string;
-  /** Leave this out for the job you are doing now. It then shows as "Present". */
-  end?: string;
+  /** Empty for the current job, which then shows as "Present". */
+  end?: string | null;
   summary: string;
   highlights: string[];
   tech: string[];
+};
+
+/** A technology in the Tech stack section, as served by the admin panel's API. */
+export type TechItem = {
+  name: string;
+  /** Full address of the uploaded logo, or null to show the first two letters. */
+  logo: string | null;
 };
 
 export const site = {
@@ -196,154 +211,7 @@ export const site = {
     note: "Prices are starting points. Your fixed quote depends on the size of your project.",
     linkLabel: "See full details",
     fromLabel: "From",
-    items: [
-      {
-        slug: "small-business-website-design",
-        name: "Business website",
-        forWho:
-          "For businesses that need a professional website that wins trust and brings in enquiries.",
-        price: 695,
-        timeLabel: "Delivery",
-        time: "2 to 3 weeks",
-        includes: [
-          "Up to 5 custom-designed pages",
-          "Looks great on phones, tablets and computers",
-          "Contact form and tap-to-call buttons",
-          "Set up to be found on Google",
-          "Two rounds of changes",
-        ],
-        seoTitle: "Small Business Website Design & Development",
-        heading: "Website design for small businesses",
-        intro:
-          "Professional small business website design and development: fast, mobile-friendly and SEO-ready, built to bring in enquiries. Fixed price from £695.",
-        story: [
-          "Your website is often the first thing a new customer sees. If it is slow, out of date or hard to use on a phone, they leave and call someone else. I design and build websites that make a good first impression and make it easy for people to get in touch.",
-          "You won't get a template with your logo dropped in. Each page is designed around what your customers need to know and the one thing you want them to do next, whether that is calling you, sending an enquiry or visiting you.",
-        ],
-        idealFor: [
-          "Local businesses that do not have a website yet",
-          "Businesses with an old website that looks poor on phones",
-          "Clinics, salons, restaurants, trades and other service businesses",
-          "Owners who want a clear price and one person to deal with",
-        ],
-        faq: [
-          {
-            question: "How much does a small business website cost?",
-            answer:
-              "A business website starts from £695. I will confirm one fixed price after our free call, based on the number of pages and what you need.",
-          },
-          {
-            question: "Can you redesign my existing website?",
-            answer:
-              "Yes. I can rebuild your website and move your useful content across, so you keep what works and lose what doesn't.",
-          },
-          {
-            question: "Will my website show up on Google?",
-            answer:
-              "I set up every website so Google can read it properly, with clear page titles and fast loading. Ranking takes time and no one can honestly promise first place, but you will have a strong foundation.",
-          },
-        ],
-        relatedProjects: ["clinic-website", "trades-quotes"],
-      },
-      {
-        slug: "online-booking-websites",
-        name: "Website + online booking",
-        forWho:
-          "For businesses that take appointments and want to spend less time on the phone.",
-        price: 1295,
-        timeLabel: "Delivery",
-        time: "4 to 5 weeks",
-        includes: [
-          "Everything in the Business website package",
-          "Customers can book online, day or night",
-          "Automatic email confirmations and reminders",
-          "A simple page to manage your bookings",
-          "A walkthrough showing you how it all works",
-        ],
-        seoTitle: "Online Booking Website Development",
-        heading: "Booking websites for small businesses",
-        intro:
-          "A custom online booking website where customers book 24/7, with automatic confirmations and reminders. Less admin for you, at a fixed price from £1,295.",
-        story: [
-          "Every appointment taken by phone or message is time away from your customers, and every missed call may be a lost booking. An online booking website lets people choose a service and a time themselves, even when you are closed.",
-          "Your customers get an instant confirmation and a reminder before they arrive, which helps reduce no-shows. You get one simple page showing what is coming up, so there is no need to pay for separate booking apps you don't fully use.",
-        ],
-        idealFor: [
-          "Salons, barbers and beauty businesses",
-          "Clinics, therapists and other health practices",
-          "Restaurants and other businesses that take reservations",
-          "Any business that spends too long arranging appointments",
-        ],
-        faq: [
-          {
-            question: "How much does a booking website cost?",
-            answer:
-              "A website with online booking starts from £1,295. Your fixed price depends on things like how many services and staff calendars you need.",
-          },
-          {
-            question: "Can customers book from their phones?",
-            answer:
-              "Yes. The booking steps are designed for phones first, because that is where most of your customers will book.",
-          },
-          {
-            question: "Will I be able to manage bookings myself?",
-            answer:
-              "Yes. You get a simple page to see and manage your bookings, and I will walk you through how it all works before launch.",
-          },
-        ],
-        relatedProjects: ["salon-booking"],
-      },
-      {
-        slug: "website-care-plans",
-        name: "Monthly care plan",
-        forWho:
-          "For business owners who want their website looked after, so they never have to think about it.",
-        price: 49,
-        priceSuffix: "/month",
-        billedMonthly: true,
-        timeLabel: "Starts",
-        time: "Straight after launch",
-        includes: [
-          "Reliable hosting",
-          "Regular updates and security checks",
-          "Up to 1 hour of small changes each month",
-          "Help by email, whatever your time zone",
-          "No long contract: cancel with 30 days' notice",
-        ],
-        seoTitle: "Website Maintenance & Care Plans",
-        heading: "Website maintenance and care plans for small businesses",
-        intro:
-          "Website maintenance made simple: reliable hosting, security updates and small changes, all looked after from £49 a month. No long contract.",
-        story: [
-          "A website needs looking after, just like your premises. Without regular care, things go out of date, small problems grow and your opening hours or prices stop matching reality.",
-          "The care plan takes all of that off your list. I keep your website online, up to date and secure, and when you need a change you just send me an email. You get a real person to talk to, not a support ticket.",
-        ],
-        idealFor: [
-          "Owners who would rather not think about their website",
-          "Businesses that often change prices, menus or opening hours",
-          "Anyone who wants help on hand when they need it",
-          "Clients who have had a website built by me",
-        ],
-        faq: [
-          {
-            question: "What counts as a small change?",
-            answer:
-              "Things like updating prices, adding photos, changing opening hours or editing text. The plan includes up to 1 hour of changes each month.",
-          },
-          {
-            question: "Can I cancel my care plan?",
-            answer:
-              "Yes. There is no long contract, and you can cancel with 30 days' notice.",
-          },
-          {
-            question: "Do you look after websites you didn't build?",
-            answer:
-              "Often, yes. Get in touch and tell me about your website, and I will take a look and let you know honestly if I can help.",
-          },
-        ],
-        relatedProjects: ["clinic-website", "salon-booking"],
-      },
-    ] satisfies Service[],
+    // The service packages themselves are managed in the admin panel.
   },
 
   work: {
@@ -354,186 +222,16 @@ export const site = {
     demoLabel: "Demo project",
     linkLabel: "Read the case study",
     labels: { problem: "Problem", solution: "Solution", result: "Result" },
-    // These are placeholders. Replace them with your real projects, or set
-    // isDemo to true on anything that is a concept rather than client work.
-    projects: [
-      {
-        slug: "clinic-website",
-        title: "Website for a local clinic",
-        isDemo: true,
-        category: "Clinic",
-        year: "2026",
-        relatedService: "small-business-website-design",
-        problem:
-          "Patients could not find opening times or treatments on their phones, so the front desk took the same calls all day.",
-        solution:
-          "A clear, phone-friendly website with treatments, prices and opening hours one tap away.",
-        result:
-          "Designed to answer common questions online and free up the front desk.",
-        overview:
-          "A concept website for a small, independent clinic. The brief was to look calm and trustworthy, and to help patients find what they need without picking up the phone.",
-        clientProblem:
-          "Many small clinics have websites built years ago, before most patients searched on their phones. Important details are buried, pages load slowly and staff answer the same questions again and again.",
-        built: [
-          "A home page that shows treatments, opening hours and contact details straight away",
-          "A simple page for each treatment, written in plain English",
-          "Tap-to-call and directions buttons on every page",
-          "An enquiry form that sends messages directly to the clinic's inbox",
-        ],
-        tech: ["React", "Next.js"],
-        results: [
-          "This is a demo project, so it has no real-world results yet.",
-          "It is designed to reduce repeat phone calls and make it easier for new patients to get in touch.",
-        ],
-        cover: {
-          src: "/images/work/clinic-cover.webp",
-          alt: "Demo clinic website shown in a browser window, with a calm green and cream design",
-        },
-        screenshots: [
-          {
-            src: "/images/work/clinic-cover.webp",
-            alt: "Home page of the demo clinic website",
-            caption: "The home page puts treatments and opening hours first.",
-          },
-          {
-            src: "/images/work/clinic-detail.webp",
-            alt: "Treatments page of the demo clinic website, with a grid of treatments",
-            caption: "Treatments are easy to scan and compare.",
-          },
-        ],
-      },
-      {
-        slug: "salon-booking",
-        title: "Online booking for a hair salon",
-        isDemo: true,
-        category: "Salon",
-        year: "2026",
-        relatedService: "online-booking-websites",
-        problem:
-          "Bookings came in through phone calls and social media messages, which meant missed appointments and hours of admin.",
-        solution:
-          "A stylish website where customers choose a service and book a time themselves.",
-        result:
-          "Designed to take bookings around the clock and cut back on admin.",
-        overview:
-          "A concept website and booking system for a neighbourhood hair salon, designed to feel stylish and personal and to make booking take less than a minute.",
-        clientProblem:
-          "When bookings arrive through phone calls and direct messages, it is easy to miss one or double-book a chair. Staff stop what they are doing to reply, and customers who get no answer may go elsewhere.",
-        built: [
-          "A service menu with clear prices and appointment lengths",
-          "A step-by-step booking flow that works well on phones",
-          "Email confirmations and reminders to help reduce no-shows",
-          "A simple page for the salon to see and manage upcoming bookings",
-        ],
-        tech: ["React", "Next.js"],
-        results: [
-          "This is a demo project, so it has no real-world results yet.",
-          "It is designed to let customers book at any time and give the salon back time spent on messages.",
-        ],
-        cover: {
-          src: "/images/work/salon-cover.webp",
-          alt: "Demo hair salon website shown in a browser window, with a warm terracotta design",
-        },
-        screenshots: [
-          {
-            src: "/images/work/salon-cover.webp",
-            alt: "Home page of the demo salon website",
-            caption: "Booking is the main action on every page.",
-          },
-          {
-            src: "/images/work/salon-detail.webp",
-            alt: "Service menu of the demo salon website, shown as a grid",
-            caption: "Customers can see services and prices at a glance.",
-          },
-        ],
-      },
-      {
-        slug: "trades-quotes",
-        title: "Quote requests for a local trade",
-        isDemo: true,
-        category: "Trades",
-        year: "2026",
-        relatedService: "small-business-website-design",
-        problem:
-          "A busy tradesperson was relying on word of mouth and had no easy way for new customers to ask for a quote.",
-        solution:
-          "A straightforward website with services, areas covered and a short quote request form.",
-        result:
-          "Designed to bring in better enquiries from the right local area.",
-        overview:
-          "A concept website for a local trades business. The brief was to look dependable, show where the business works and make asking for a quote quick from a phone.",
-        clientProblem:
-          "Good tradespeople often rely on recommendations alone. Without a proper website, new customers cannot check they are trustworthy, and enquiries arrive with too little detail to quote from.",
-        built: [
-          "Clear pages for each service and the areas covered",
-          "A short quote form that asks for the details that matter",
-          "A tap-to-call button that stays within reach on phones",
-          "Set-up to help the business appear in local Google searches",
-        ],
-        tech: ["React", "Next.js"],
-        results: [
-          "This is a demo project, so it has no real-world results yet.",
-          "It is designed to win trust quickly and bring in enquiries with the right details.",
-        ],
-        cover: {
-          src: "/images/work/trades-cover.webp",
-          alt: "Demo trades website shown in a browser window, with a strong navy and yellow design",
-        },
-        screenshots: [
-          {
-            src: "/images/work/trades-cover.webp",
-            alt: "Home page of the demo trades website",
-            caption: "The first screen says what the business does and where.",
-          },
-          {
-            src: "/images/work/trades-detail.webp",
-            alt: "Services page of the demo trades website, shown as a grid",
-            caption: "Services are laid out clearly, each with a route to a quote.",
-          },
-        ],
-      },
-    ] satisfies Project[],
+    // The projects themselves are managed in the admin panel.
   },
 
-  // The tech stack section. Each row scrolls sideways; rows alternate direction.
-  // "color" is the brand colour shown on the small badge beside each name.
+  // The tech stack section. Items are spread across three rows that scroll
+  // sideways in alternating directions.
   stack: {
     eyebrow: "Tech stack",
     title: "My full-stack development tech stack",
     intro: "Modern, proven technology for the front end and back end, from React and Next.js to PHP, Laravel and Node.js, chosen to keep your website fast, secure, SEO-friendly and easy to grow.",
-    rows: [
-      [
-        { name: "React", color: "#61dafb" },
-        { name: "Next.js", color: "#ffffff" },
-        { name: "TypeScript", color: "#3178c6" },
-        { name: "JavaScript", color: "#f7df1e" },
-        { name: "Tailwind CSS", color: "#38bdf8" },
-        { name: "HTML5", color: "#e34f26" },
-        { name: "CSS3", color: "#1572b6" },
-        { name: "Framer Motion", color: "#ff4d8d" },
-      ],
-      [
-        { name: "PHP", color: "#777bb4" },
-        { name: "Laravel", color: "#ff2d20" },
-        { name: "Node.js", color: "#5fa04e" },
-        { name: "Express", color: "#cccccc" },
-        { name: "REST APIs", color: "#5ee0ae" },
-        { name: "MySQL", color: "#4479a1" },
-        { name: "PostgreSQL", color: "#4169e1" },
-        { name: "MongoDB", color: "#47a248" },
-        { name: "Redis", color: "#ff4438" },
-      ],
-      [
-        { name: "Git", color: "#f05032" },
-        { name: "GitHub", color: "#ffffff" },
-        { name: "Docker", color: "#2496ed" },
-        { name: "Vercel", color: "#ffffff" },
-        { name: "Linux", color: "#fcc624" },
-        { name: "Nginx", color: "#009639" },
-        { name: "OpenAI API", color: "#10a37f" },
-        { name: "Figma", color: "#f24e1e" },
-      ],
-    ],
+    // The technologies themselves are managed in the admin panel (name and logo).
   },
 
   process: {
@@ -588,51 +286,16 @@ export const site = {
     intro: "My professional journey so far, with my current role first.",
     present: "Present",
     current: "Now",
-    // This section stays hidden until you add at least one job here, newest first, like:
-    // {
-    //   role: "Full-Stack Developer",
-    //   company: "Company name",
-    //   companyUrl: "https://company.com",
-    //   type: "Full-time",
-    //   location: "Dhaka, Bangladesh",
-    //   start: "Jan 2024",
-    //   summary: "One or two sentences about what you do there.",
-    //   highlights: ["Something you built or improved", "Another achievement"],
-    //   tech: ["Laravel", "React", "MySQL"],
-    // },
-    jobs: [
-      {
-        role: "Full-Stack Developer",
-        company: "PFEC Global",
-        companyUrl: "https://www.pfecglobal.com",
-        type: "Full-time",
-        start: "2025",
-        summary:
-          "Building and maintaining the company's web applications across the front end and back end, from user-facing pages to APIs and databases.",
-        highlights: [],
-        tech: ["PHP", "Laravel", "Node.js", "React", "Next.js", "MySQL"],
-      },
-      {
-        role: "Full-Stack Developer",
-        company: "Appsinception",
-        type: "Full-time",
-        start: "2023",
-        end: "2025",
-        summary:
-          "Developed web applications for clients, working on both the front end and the back end.",
-        highlights: [],
-        tech: ["PHP", "Laravel", "React", "MySQL"],
-      },
-    ] as Job[],
+    // The jobs themselves are managed in the admin panel. This section stays
+    // hidden until at least one job is shown there.
   },
 
   testimonials: {
     eyebrow: "Testimonials",
     title: "What clients say",
     intro: "Feedback from businesses I have built websites and apps for.",
-    // This section stays hidden until you add a real testimonial here, like:
-    // { quote: "Their words here.", name: "Their name", role: "Owner, Business name", rating: 5 },
-    items: [] as Testimonial[],
+    // The testimonials themselves are managed in the admin panel. The section
+    // stays hidden on the live site until at least one is shown there.
   },
 
   faq: {
@@ -642,58 +305,7 @@ export const site = {
     askTitle: "Still have a question?",
     askText: "Send me a message and I will reply within one working day.",
     askLabel: "Ask me directly",
-    items: [
-      {
-        question: "How do payments work?",
-        answer:
-          "You pay 50% up front to book your project and the remaining 50% when your website is ready to launch. All prices are fixed and agreed before any work begins.",
-      },
-      {
-        question: "What about the time difference?",
-        answer:
-          "It won't affect you. I'm based in Dhaka, Bangladesh, and I work with clients across many time zones. I adjust my hours so you can reach me during your normal working day.",
-      },
-      {
-        question: "Who owns the website and code?",
-        answer:
-          "You do. Once your final payment is made, the website, its code and its content all belong to you. You are never locked in.",
-      },
-      {
-        question: "How long does a project take?",
-        answer:
-          "A business website usually takes 2 to 3 weeks, and a website with online booking usually takes 4 to 5 weeks. I will confirm your timeline in your quote.",
-      },
-      {
-        question: "What technologies do you use?",
-        answer:
-          "I'm a full-stack developer. On the front end I use React, Next.js, TypeScript and Tailwind CSS. On the back end I use PHP, Laravel and Node.js, with databases such as MySQL and PostgreSQL. I pick the right tools for your project, not the other way round.",
-      },
-      {
-        question: "Will my website be SEO-friendly?",
-        answer:
-          "Yes. Every website I build is fast, mobile-friendly and set up for search engines, with clean page structure, proper titles and descriptions, structured data and a sitemap, so Google can find and understand your business.",
-      },
-      {
-        question: "Do you work with clients outside Bangladesh?",
-        answer:
-          "Yes. I work remotely with businesses all over the world, including the UK, Europe, North America and Australia. We talk by email, video call or WhatsApp at times that suit you.",
-      },
-      {
-        question: "Do you build web apps and mobile apps?",
-        answer:
-          "Yes. As well as websites, I build custom web applications such as dashboards, booking systems and customer portals, and mobile apps for iPhone and Android. The same back end can power your website, web app and mobile app together.",
-      },
-      {
-        question: "Can you add AI features to my website?",
-        answer:
-          "Yes. I can add AI-powered features such as a chat assistant that answers customer questions, or automation that saves you time on routine tasks.",
-      },
-      {
-        question: "Do you offer support after launch?",
-        answer:
-          "Yes. I fix any problems with my work for 30 days after launch at no extra cost. After that, the monthly care plan covers hosting, updates and small changes.",
-      },
-    ],
+    // The questions themselves are managed in the admin panel.
   },
 
   contact: {

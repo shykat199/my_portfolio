@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { Resend } from "resend";
 import { z } from "zod";
 import { site } from "@content/site";
@@ -68,13 +69,60 @@ export async function sendContactMessage(
     return { status: "invalid", errors, values };
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error("Contact form: RESEND_API_KEY is not set");
-    return { status: "failure", values };
+  const requestHeaders = await headers();
+  const visitor = {
+    ip: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || requestHeaders.get("x-real-ip") || null,
+    userAgent: requestHeaders.get("user-agent"),
+  };
+
+  // The message counts as sent if it reaches the admin inbox or your email.
+  const [saved, emailed] = await Promise.all([
+    saveToInbox(parsed.data, visitor),
+    sendEmail(parsed.data),
+  ]);
+
+  if (!saved && !emailed) return { status: "failure", values };
+
+  return { status: "success" };
+}
+
+type ContactMessage = z.infer<typeof contactSchema>;
+
+/** Saves the message in the admin panel's Messages inbox. */
+async function saveToInbox(data: ContactMessage, visitor: { ip: string | null; userAgent: string | null }) {
+  const base = process.env.BLOG_API_URL;
+  const secret = process.env.REVALIDATE_SECRET;
+  if (!base || !secret) {
+    console.error("Contact form: BLOG_API_URL or REVALIDATE_SECRET is not set, so messages can't reach the inbox");
+    return false;
   }
 
-  const { name, email, business, website, message } = parsed.data;
+  try {
+    const response = await fetch(`${base.replace(/\/$/, "")}/api/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json", "x-site-secret": secret },
+      body: JSON.stringify({
+        ...data,
+        website: data.website || null,
+        ip_address: visitor.ip,
+        user_agent: visitor.userAgent,
+      }),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      console.error("Contact form: the admin panel refused the message", response.status, await response.text());
+    }
+    return response.ok;
+  } catch (error) {
+    console.error("Contact form: could not reach the admin panel", error);
+    return false;
+  }
+}
+
+/** Emails the message to you through Resend, if it is set up. */
+async function sendEmail({ name, email, business, website, message }: ContactMessage) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return false;
 
   try {
     const { error } = await new Resend(apiKey).emails.send({
@@ -91,15 +139,13 @@ export async function sendContactMessage(
         message,
       ].join("\n"),
     });
-
     if (error) {
       console.error("Contact form: Resend rejected the message", error);
-      return { status: "failure", values };
+      return false;
     }
+    return true;
   } catch (error) {
     console.error("Contact form: could not reach Resend", error);
-    return { status: "failure", values };
+    return false;
   }
-
-  return { status: "success" };
 }
