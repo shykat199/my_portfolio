@@ -33,6 +33,8 @@ export type Service = {
   relatedProjects: string[];
   /** For search engines. The admin panel fills gaps from the heading, intro and name. */
   seo: { title: string; description: string; keywords: string[] };
+  /** Last edited in the admin panel (YYYY-MM-DD), for the sitemap. */
+  updatedAt?: string | null;
 };
 
 /** A case study, as served by the admin panel's API. */
@@ -60,6 +62,8 @@ export type Project = {
   screenshots: { src: string; alt: string; caption: string }[];
   /** For search engines. The admin panel fills gaps from the title, overview and tech used. */
   seo: { title: string; description: string; keywords: string[] };
+  /** Last edited in the admin panel (YYYY-MM-DD), for the sitemap. */
+  updatedAt?: string | null;
 };
 
 /** A client testimonial, as served by the admin panel's API. */

@@ -96,19 +96,43 @@ function logoNode(settings: SiteSettings): ImageObject {
   };
 }
 
+/** You, as set under Site settings → Person in the admin panel. */
 function personNode(settings: SiteSettings): Person {
+  const { person } = settings;
+
   return {
     "@type": "Person",
     "@id": schemaIds.person,
-    name: site.name,
-    jobTitle: site.jobTitle,
+    name: person.name,
+    jobTitle: person.jobTitle,
+    ...(person.description ? { description: person.description } : {}),
     url: `${url}/`,
-    email: site.email,
+    mainEntityOfPage: { "@id": `${url}/#webpage` },
+    email: person.email,
+    ...(person.phone ? { telephone: person.phone } : {}),
     image: { "@id": schemaIds.photo },
+    ...(person.city || person.country
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            ...(person.city ? { addressLocality: person.city } : {}),
+            ...(person.country ? { addressCountry: person.country } : {}),
+          },
+        }
+      : {}),
+    ...(person.worksFor
+      ? {
+          worksFor: {
+            "@type": "Organization",
+            name: person.worksFor.name,
+            ...(person.worksFor.url ? { url: person.worksFor.url } : {}),
+          },
+        }
+      : {}),
     // Profiles set in the admin panel tell Google these accounts are yours.
     sameAs: Object.values(settings.social).filter((link): link is string => Boolean(link)),
-    knowsAbout: site.skills,
-    knowsLanguage: site.languages,
+    knowsAbout: person.skills,
+    knowsLanguage: person.languages,
   };
 }
 

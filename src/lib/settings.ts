@@ -5,6 +5,8 @@ export type SocialNetwork = "linkedin" | "github" | "facebook" | "instagram" | "
 
 /** Site-wide settings managed in the admin panel (Site settings). */
 export type SiteSettings = {
+  /** Last saved in the admin panel (YYYY-MM-DD), or null when using the built-in content. */
+  updatedAt: string | null;
   /** Uploaded logo, or null to show the built-in initials badge. */
   logo: string | null;
   /** Uploaded favicon (square PNG), or null for the built-in icon. */
@@ -25,6 +27,20 @@ export type SiteSettings = {
   };
   /** The home page's search engine title, description and keywords. */
   seo: { title: string; description: string; keywords: string[] };
+  /** Who you are, for search engines (schema.org Person). */
+  person: {
+    name: string;
+    jobTitle: string;
+    description: string | null;
+    email: string;
+    phone: string | null;
+    city: string | null;
+    country: string | null;
+    skills: string[];
+    languages: string[];
+    /** Your current employer, taken from the current job in Experience. */
+    worksFor: { name: string; url: string | null } | null;
+  };
   about: {
     title: string;
     story: string[];
@@ -36,6 +52,7 @@ export type SiteSettings = {
 
 /** Used when the admin panel can't be reached, so the site never looks broken. */
 const fallback: SiteSettings = {
+  updatedAt: null,
   logo: null,
   favicon: null,
   social: { linkedin: site.links.linkedin, github: site.links.github, facebook: null, instagram: null, x: null },
@@ -48,6 +65,18 @@ const fallback: SiteSettings = {
     supporting: site.hero.supporting,
   },
   seo: { ...site.seo, keywords: [] },
+  person: {
+    name: site.name,
+    jobTitle: site.jobTitle,
+    description: null,
+    email: site.email,
+    phone: null,
+    city: site.location.city,
+    country: site.location.country,
+    skills: site.skills,
+    languages: site.languages,
+    worksFor: null,
+  },
   about: {
     title: site.about.title,
     story: site.about.story,
@@ -59,7 +88,11 @@ const fallback: SiteSettings = {
 
 export async function getSettings(): Promise<SiteSettings> {
   try {
-    type ApiSettings = Omit<SiteSettings, "hero" | "seo"> & { hero: SiteSettings["hero"] | null; seo: SiteSettings["seo"] | null };
+    type ApiSettings = Omit<SiteSettings, "hero" | "seo" | "person"> & {
+      hero: SiteSettings["hero"] | null;
+      seo: SiteSettings["seo"] | null;
+      person: SiteSettings["person"] | null;
+    };
     const settings = await fetchFromApi<ApiSettings>("/settings", "settings");
     if (!settings) return fallback;
     // Anything not filled in yet in the admin panel keeps the built-in content.
@@ -67,6 +100,7 @@ export async function getSettings(): Promise<SiteSettings> {
       ...settings,
       hero: settings.hero ?? fallback.hero,
       seo: settings.seo ?? fallback.seo,
+      person: settings.person ?? fallback.person,
       about: { ...settings.about, photo: settings.about.photo ?? fallback.about.photo },
     };
   } catch (error) {
