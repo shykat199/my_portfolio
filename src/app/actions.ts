@@ -126,7 +126,8 @@ async function sendEmail({ name, email, business, website, message }: ContactMes
 
   try {
     const { error } = await new Resend(apiKey).emails.send({
-      from: `Website enquiry <website@${new URL(site.url).hostname}>`,
+      // Resend only sends from a domain verified in your account; until then use its test sender.
+      from: process.env.RESEND_FROM || `Website enquiry <website@${new URL(site.url).hostname}>`,
       to: site.email,
       replyTo: email,
       subject: `New enquiry from ${name} (${business})`.replace(/[\r\n]+/g, " "),
