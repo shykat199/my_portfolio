@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { site } from "@content/site";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { getSettings } from "@/lib/settings";
 
@@ -41,6 +42,10 @@ export async function About() {
               </li>
             ))}
           </ul>
+
+          <Button href="/about" variant="secondary" icon="arrow" className="mt-9">
+            {site.about.more}
+          </Button>
         </Reveal>
       </div>
     </section>

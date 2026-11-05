@@ -37,6 +37,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1,
     },
+    {
+      // Built from the settings (person, story, résumé) and the jobs in Experience.
+      url: `${site.url}/about`,
+      lastModified: latest(settings.updatedAt),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     ...services.map((service) => ({
       url: `${site.url}/services/${service.slug}`,
       lastModified: latest(service.updatedAt),

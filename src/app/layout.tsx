@@ -78,7 +78,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <NodeField />
         <MotionProvider>
           <ScrollProgress />
-          <Header logo={settings.logo} />
+          <Header logo={settings.logo} hiddenSections={settings.hiddenSections} />
           <main id="main" className="pt-20">{children}</main>
           <Footer />
           <FloatingActions whatsapp={settings.whatsapp} />

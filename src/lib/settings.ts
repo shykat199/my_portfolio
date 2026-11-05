@@ -11,9 +11,13 @@ export type SiteSettings = {
   logo: string | null;
   /** Uploaded favicon (square PNG), or null for the built-in icon. */
   favicon: string | null;
+  /** Uploaded résumé (PDF), or null to hide the download button. */
+  resume: string | null;
   social: Record<SocialNetwork, string | null>;
   /** WhatsApp number with country code, digits only, or null to hide WhatsApp. */
   whatsapp: string | null;
+  /** Home page sections switched off in the admin panel, by section id (e.g. "work"). */
+  hiddenSections: string[];
   hero: {
     /** The start of the typing line, e.g. "I build". */
     prefix: string;
@@ -55,8 +59,10 @@ const fallback: SiteSettings = {
   updatedAt: null,
   logo: null,
   favicon: null,
+  resume: null,
   social: { linkedin: site.links.linkedin, github: site.links.github, facebook: null, instagram: null, x: null },
   whatsapp: site.whatsapp.number || null,
+  hiddenSections: [],
   hero: {
     prefix: site.hero.eyebrow.prefix,
     words: site.hero.eyebrow.words,
@@ -98,6 +104,8 @@ export async function getSettings(): Promise<SiteSettings> {
     // Anything not filled in yet in the admin panel keeps the built-in content.
     return {
       ...settings,
+      resume: settings.resume ?? null,
+      hiddenSections: settings.hiddenSections ?? fallback.hiddenSections,
       hero: settings.hero ?? fallback.hero,
       seo: settings.seo ?? fallback.seo,
       person: settings.person ?? fallback.person,

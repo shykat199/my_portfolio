@@ -156,7 +156,7 @@ export const site = {
     { label: "Work", href: "/#work" },
     { label: "Process", href: "/#process" },
     { label: "Experience", href: "/#experience" },
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about" },
     { label: "Blog", href: "/blog" },
   ],
 
@@ -282,6 +282,29 @@ export const site = {
       "You see progress every week, so there are no surprises",
       "I reply during your working day, wherever you are",
     ],
+    more: "More about me",
+  },
+
+  // The About page (/about). Your name, job, story, jobs, skills and links
+  // come from the admin panel, so they match the rest of the site.
+  aboutPage: {
+    eyebrow: "About me",
+    facts: {
+      role: "Role",
+      company: "Currently at",
+      location: "Based in",
+      experience: "Experience",
+      languages: "Languages",
+      email: "Email",
+    },
+    // "{years}" is replaced with the years since your first job in Experience.
+    experienceYears: "{years}+ years",
+    story: "My story",
+    skills: "Skills",
+    profiles: "Find me online",
+    resume: "Download my résumé",
+    ctaTitle: "Want to work together?",
+    ctaText: "Book a free 15-minute call and tell me about your project.",
   },
 
   career: {
@@ -361,6 +384,7 @@ export const site = {
     services: "Services",
     work: "Work",
     blog: "Blog",
+    about: "About",
   },
 
   servicePage: {

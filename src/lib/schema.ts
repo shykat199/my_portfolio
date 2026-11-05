@@ -8,6 +8,7 @@ import type {
   OfferCatalog,
   Person,
   ProfessionalService,
+  ProfilePage,
   Service as ServiceSchema,
   Thing,
   WebPage,
@@ -106,8 +107,9 @@ function personNode(settings: SiteSettings): Person {
     name: person.name,
     jobTitle: person.jobTitle,
     ...(person.description ? { description: person.description } : {}),
-    url: `${url}/`,
-    mainEntityOfPage: { "@id": `${url}/#webpage` },
+    // The About page is the page about you.
+    url: `${url}/about`,
+    mainEntityOfPage: { "@id": `${url}/about#webpage` },
     email: person.email,
     ...(person.phone ? { telephone: person.phone } : {}),
     image: { "@id": schemaIds.photo },
@@ -203,6 +205,16 @@ export function webPageNode({ path, name, description, hasBreadcrumb }: WebPageO
     isPartOf: { "@id": schemaIds.website },
     ...(hasBreadcrumb ? { breadcrumb: { "@id": `${page}#breadcrumb` } } : {}),
   };
+}
+
+/** The About page: a profile page whose subject is you (the Person node). */
+export function profilePageNode({ path, name, description, dateModified }: WebPageOptions & { dateModified: string | null }): ProfilePage {
+  return {
+    ...webPageNode({ path, name, description, hasBreadcrumb: true }),
+    "@type": "ProfilePage",
+    mainEntity: { "@id": schemaIds.person },
+    ...(dateModified ? { dateModified } : {}),
+  } as ProfilePage;
 }
 
 export function faqNode(path: string, items: FaqItem[]): FAQPage {

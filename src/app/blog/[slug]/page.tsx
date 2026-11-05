@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       article: { publishedTime: post.published, modifiedTime: post.updated ?? undefined, tags: post.tags },
     }),
     keywords: post.seo.keywords,
-    authors: [{ name: site.name, url: site.url }],
+    authors: [{ name: site.name, url: `${site.url}/about` }],
   };
 }
 
@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             />
             <p className="text-sm leading-snug">
               <span className="block text-muted">{labels.by}</span>
-              <Link href="/#about" rel="author" className="font-medium hover:text-accent">
+              <Link href="/about" rel="author" className="font-medium hover:text-accent">
                 {site.name}
               </Link>
             </p>

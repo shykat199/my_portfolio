@@ -41,9 +41,11 @@ export async function Hero() {
             <Button href={bookingHref} icon="calendar">
               {cta.hero}
             </Button>
-            <Button href="/#work" variant="secondary" icon="arrow">
-              {cta.work}
-            </Button>
+            {!settings.hiddenSections.includes("work") && (
+              <Button href="/#work" variant="secondary" icon="arrow">
+                {cta.work}
+              </Button>
+            )}
           </div>
 
           <div className="mt-8 flex items-center gap-3 sm:mt-10 lg:mt-8">
