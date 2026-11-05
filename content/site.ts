@@ -358,7 +358,10 @@ export const site = {
     },
     submit: "Send message",
     sending: "Sending...",
+    // Shown in a toast after sending; the form is cleared for another message.
+    successTitle: "Message sent",
     success: "Thank you. Your message is on its way, and I will reply within one working day.",
+    closeToast: "Close",
     invalid: "Please check the highlighted fields and try again.",
     failure: "Sorry, your message could not be sent. Please email me directly at",
     privacyNote: "I only use your details to reply to your enquiry. Read the",
