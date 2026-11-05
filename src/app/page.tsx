@@ -30,13 +30,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** The sections below the hero, in order, keyed by the id the admin panel uses to switch them off. */
 const sections = [
+  ["about", About],
   ["trust", TrustStrip],
   ["services", Services],
   ["work", Work],
   ["stack", TechStack],
   ["process", Process],
   ["experience", Career],
-  ["about", About],
   ["testimonials", Testimonials],
   ["blog", LatestPosts],
   ["faq", Faq],

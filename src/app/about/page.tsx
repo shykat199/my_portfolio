@@ -44,7 +44,7 @@ const headingClass = "text-3xl leading-tight sm:text-4xl";
 
 export default async function AboutPage() {
   const [settings, jobs] = await Promise.all([getSettings(), getExperience()]);
-  const { person, about, social, whatsapp, resume, updatedAt } = settings;
+  const { person, about, social, whatsapp, resume } = settings;
   const { aboutPage: labels, breadcrumbs, cta } = site;
   const crumbs: Crumb[] = [{ label: breadcrumbs.home, href: "/" }, { label: breadcrumbs.about }];
   const location = [person.city, person.country].filter(Boolean).join(", ");
@@ -89,7 +89,7 @@ export default async function AboutPage() {
     <article>
       <JsonLd
         nodes={[
-          profilePageNode({ path, name: pageTitle(person), description: pageDescription(settings), dateModified: updatedAt }),
+          profilePageNode({ path, name: pageTitle(person), description: pageDescription(settings), settings }),
           breadcrumbNode(path, crumbs),
         ]}
       />

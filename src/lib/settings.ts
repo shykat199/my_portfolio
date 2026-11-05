@@ -76,7 +76,7 @@ const fallback: SiteSettings = {
   person: {
     name: site.name,
     jobTitle: site.jobTitle,
-    description: null,
+    description: site.bio,
     email: site.email,
     phone: null,
     website: null,
@@ -84,7 +84,7 @@ const fallback: SiteSettings = {
     country: site.location.country,
     skills: site.skills,
     languages: site.languages,
-    worksFor: null,
+    worksFor: site.worksFor,
   },
   about: {
     title: site.about.title,
@@ -111,7 +111,16 @@ export async function getSettings(): Promise<SiteSettings> {
       hiddenSections: settings.hiddenSections ?? fallback.hiddenSections,
       hero: settings.hero ?? fallback.hero,
       seo: settings.seo ?? fallback.seo,
-      person: settings.person ?? fallback.person,
+      person: settings.person
+        ? {
+            ...settings.person,
+            description: settings.person.description || fallback.person.description,
+            city: settings.person.city || fallback.person.city,
+            country: settings.person.country || fallback.person.country,
+            skills: settings.person.skills?.length ? settings.person.skills : fallback.person.skills,
+            worksFor: settings.person.worksFor ?? fallback.person.worksFor,
+          }
+        : fallback.person,
       about: { ...settings.about, photo: settings.about.photo ?? fallback.about.photo },
     };
   } catch (error) {

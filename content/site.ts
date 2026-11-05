@@ -117,6 +117,9 @@ export const site = {
   },
   backToTop: "Back to top",
   jobTitle: "Full-Stack Web Developer",
+  // Used when the admin panel has no description or current job set.
+  bio: "Shykat Roy is a full-stack web developer based in Dhaka, Bangladesh, with over three years of professional experience in PHP, Laravel, React, Next.js and Node.js.",
+  worksFor: { name: "PFEC Global", url: null },
   // Shown to search engines as the skills you are known for.
   skills: [
     "Full-stack web development",

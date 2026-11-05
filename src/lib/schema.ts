@@ -107,9 +107,9 @@ function personNode(settings: SiteSettings): Person {
     name: person.name,
     jobTitle: person.jobTitle,
     ...(person.description ? { description: person.description } : {}),
+    url: `${url}/`,
     // The About page is the page about you.
-    url: `${url}/about`,
-    mainEntityOfPage: { "@id": `${url}/about#webpage` },
+    mainEntityOfPage: { "@id": `${url}/about#profile` },
     email: person.email,
     ...(person.phone ? { telephone: person.phone } : {}),
     image: { "@id": schemaIds.photo },
@@ -120,6 +120,7 @@ function personNode(settings: SiteSettings): Person {
             ...(person.city ? { addressLocality: person.city } : {}),
             ...(person.country ? { addressCountry: person.country } : {}),
           },
+          homeLocation: { "@type": "Place", name: [person.city, person.country].filter(Boolean).join(", ") },
         }
       : {}),
     ...(person.worksFor
@@ -211,13 +212,18 @@ export function webPageNode({ path, name, description, hasBreadcrumb }: WebPageO
   };
 }
 
-/** The About page: a profile page whose subject is you (the Person node). */
-export function profilePageNode({ path, name, description, dateModified }: WebPageOptions & { dateModified: string | null }): ProfilePage {
+type ProfilePageOptions = WebPageOptions & { settings: SiteSettings };
+
+/** The About page: a profile page whose subject is you, with your full Person details. */
+export function profilePageNode({ path, name, description, settings }: ProfilePageOptions): ProfilePage {
+  const page = pageUrl(path);
+
   return {
     ...webPageNode({ path, name, description, hasBreadcrumb: true }),
     "@type": "ProfilePage",
-    mainEntity: { "@id": schemaIds.person },
-    ...(dateModified ? { dateModified } : {}),
+    "@id": `${page}#profile`,
+    mainEntity: personNode(settings),
+    ...(settings.updatedAt ? { dateModified: settings.updatedAt } : {}),
   } as ProfilePage;
 }
 
