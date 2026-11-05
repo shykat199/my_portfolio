@@ -105,7 +105,7 @@ export default async function AboutPage() {
           {person.description && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">{person.description}</p>}
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             {resume && (
-              <Button href="/resume" prefetch={false} download icon="arrow">
+              <Button href="/resume" prefetch={false} download icon="download">
                 {labels.resume}
               </Button>
             )}
