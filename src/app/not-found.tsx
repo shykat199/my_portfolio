@@ -18,11 +18,11 @@ function lineStyle(line: number) {
 }
 
 export default async function NotFound() {
-  const { hiddenSections } = await getSettings();
+  const { hiddenSections, person } = await getSettings();
   const { code } = notFound;
   // "/#work" -> "work"; pages of their own ("/about") are always shown.
   const links = notFound.links.filter((link) => !hiddenSections.includes(link.href.split("#")[1] ?? ""));
-  const contactHref = hiddenSections.includes("contact") ? `mailto:${site.email}` : "/#contact";
+  const contactHref = hiddenSections.includes("contact") ? `mailto:${person.email}` : "/#contact";
 
   const lines = [
     <span key="request">

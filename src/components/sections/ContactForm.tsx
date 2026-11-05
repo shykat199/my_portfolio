@@ -87,7 +87,8 @@ function SentToast({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-export function ContactForm() {
+/** `email` is shown if sending fails, so visitors can still reach you. */
+export function ContactForm({ email }: { email: string }) {
   const [state, formAction, pending] = useActionState(sendContactMessage, initialState);
   const statusRef = useRef<HTMLDivElement>(null);
   // Each send returns a new state object, so the toast shows again for every message.
@@ -115,8 +116,8 @@ export function ContactForm() {
         {state.status === "failure" && (
           <p className="mt-4 text-sm font-medium text-error">
             {contact.failure}{" "}
-            <a href={`mailto:${site.email}`} className="underline underline-offset-2">
-              {site.email}
+            <a href={`mailto:${email}`} className="underline underline-offset-2">
+              {email}
             </a>
             .
           </p>

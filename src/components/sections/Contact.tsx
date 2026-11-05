@@ -2,10 +2,12 @@ import { site } from "@content/site";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { bookingHref } from "@/lib/booking";
+import { getSettings } from "@/lib/settings";
 import { ContactForm } from "./ContactForm";
 
-export function Contact() {
-  const { contact, cta, links, email } = site;
+export async function Contact() {
+  const { contact, cta, links } = site;
+  const { email } = (await getSettings()).person;
 
   return (
     <section id="contact" className="border-t border-line bg-raised/80">
@@ -30,7 +32,7 @@ export function Contact() {
         </Reveal>
 
         <div className="md:col-span-7">
-          <ContactForm />
+          <ContactForm email={email} />
         </div>
       </div>
     </section>

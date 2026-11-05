@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { Resend } from "resend";
 import { z } from "zod";
 import { site } from "@content/site";
+import { getSettings } from "@/lib/settings";
 
 const websitePattern = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+([/?#]\S*)?$/i;
 
@@ -128,7 +129,8 @@ async function sendEmail({ name, email, business, website, message }: ContactMes
     const { error } = await new Resend(apiKey).emails.send({
       // Resend only sends from a domain verified in your account; until then use its test sender.
       from: process.env.RESEND_FROM || `Website enquiry <website@${new URL(site.url).hostname}>`,
-      to: site.email,
+      // Sent to the email in the admin panel (Site settings → Person).
+      to: (await getSettings()).person.email,
       replyTo: email,
       subject: `New enquiry from ${name} (${business})`.replace(/[\r\n]+/g, " "),
       text: [

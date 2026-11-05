@@ -150,13 +150,16 @@ function catalogNode(services: Service[]): OfferCatalog {
   };
 }
 
-const business: ProfessionalService = {
+function businessNode(settings: SiteSettings): ProfessionalService {
+  const { email } = settings.person;
+
+  return {
   "@type": "ProfessionalService",
   "@id": schemaIds.business,
   name: site.name,
   description: site.seo.description,
   url: `${url}/`,
-  email: site.email,
+  email,
   logo: { "@id": schemaIds.logo },
   image: { "@id": schemaIds.photo },
   founder: { "@id": schemaIds.person },
@@ -164,16 +167,17 @@ const business: ProfessionalService = {
   priceRange: "££",
   contactPoint: {
     "@type": "ContactPoint",
-    email: site.email,
+    email,
     contactType: "customer service",
     availableLanguage: "English",
   },
   hasOfferCatalog: { "@id": schemaIds.catalog },
-};
+  };
+}
 
 /** Connected to every page's graph through the @id references above. */
 export function siteGraph(services: Service[], settings: SiteSettings): Thing[] {
-  return [personNode(settings), photoNode(settings), logoNode(settings), business, catalogNode(services)];
+  return [personNode(settings), photoNode(settings), logoNode(settings), businessNode(settings), catalogNode(services)];
 }
 
 export const websiteNode: WebSite = {

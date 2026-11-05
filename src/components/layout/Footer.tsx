@@ -11,10 +11,10 @@ const iconClass =
 
 export async function Footer() {
   const [services, settings] = await Promise.all([getServices(), getSettings()]);
-  const { social, whatsapp } = settings;
+  const { social, whatsapp, person } = settings;
   // Only networks with a link set in the admin panel are shown.
   const socials = [
-    { label: "Email", href: `mailto:${site.email}` },
+    { label: "Email", href: `mailto:${person.email}` },
     { label: "LinkedIn", href: social.linkedin },
     { label: "GitHub", href: social.github },
     { label: "Facebook", href: social.facebook },
@@ -61,8 +61,8 @@ export async function Footer() {
           </ul>
           <ul className="flex flex-wrap gap-x-6 gap-y-3 md:justify-end">
             <li>
-              <a href={`mailto:${site.email}`} className={linkClass}>
-                {site.email}
+              <a href={`mailto:${person.email}`} className={linkClass}>
+                {person.email}
               </a>
             </li>
             <li>

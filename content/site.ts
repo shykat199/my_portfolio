@@ -105,6 +105,8 @@ export const site = {
   name: "Shykat Roy",
   initials: "SR",
   url: "https://shykatroy.com",
+  // Only used if the admin panel can't be reached. Everywhere else the email comes from
+  // Site settings → Person → Email in the admin panel.
   email: "shykatroy1@gmail.com",
   // WhatsApp number in international format, digits only (e.g. "8801712345678").
   // The floating WhatsApp button stays hidden until this is filled in.
@@ -442,7 +444,7 @@ export const site = {
       {
         title: "Your rights and data deletion",
         body: [
-          "You can ask to see, correct or delete your information at any time. Email shykatroy1@gmail.com with the subject line \"Data request\" and I will respond within one month.",
+          "You can ask to see, correct or delete your information at any time. Email {email} with the subject line \"Data request\" and I will respond within one month.",
           "If you are unhappy with how your data has been handled, please contact me first. You also have the right to complain to the data protection authority in your country.",
         ],
       },
