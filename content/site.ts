@@ -140,7 +140,7 @@ export const site = {
   languages: ["English", "Bengali"],
   // Change this date when you make big content changes. Search engines read it.
   lastUpdated: "2026-11-01",
-  location: { city: "Dhaka", country: "Bangladesh", countryCode: "BD" },
+  location: { streetAddress: "Dhanmondi 27", postalCode: "1209", city: "Dhaka", country: "Bangladesh", countryCode: "BD" },
 
   seo: {
     title: "Full-Stack Developer – Laravel, React & Next.js | Shykat Roy",

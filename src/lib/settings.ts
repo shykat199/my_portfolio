@@ -40,6 +40,8 @@ export type SiteSettings = {
     phone: string | null;
     /** Website in the contact QR code, or null to use this site's address. */
     website: string | null;
+    streetAddress: string | null;
+    postalCode: string | null;
     city: string | null;
     country: string | null;
     skills: string[];
@@ -80,6 +82,8 @@ const fallback: SiteSettings = {
     email: site.email,
     phone: null,
     website: null,
+    streetAddress: site.location.streetAddress,
+    postalCode: site.location.postalCode,
     city: site.location.city,
     country: site.location.country,
     skills: site.skills,
@@ -115,6 +119,8 @@ export async function getSettings(): Promise<SiteSettings> {
         ? {
             ...settings.person,
             description: settings.person.description || fallback.person.description,
+            streetAddress: settings.person.streetAddress || fallback.person.streetAddress,
+            postalCode: settings.person.postalCode || fallback.person.postalCode,
             city: settings.person.city || fallback.person.city,
             country: settings.person.country || fallback.person.country,
             skills: settings.person.skills?.length ? settings.person.skills : fallback.person.skills,

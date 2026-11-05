@@ -114,12 +114,11 @@ function personNode(settings: SiteSettings): Person {
     email: person.email,
     ...(person.phone ? { telephone: person.phone } : {}),
     image: { "@id": schemaIds.photo },
-    ...(person.city || person.country
-      ? {
-          ...addressNode(settings),
-          homeLocation: { "@type": "Place", name: [person.city, person.country].filter(Boolean).join(", ") },
-        }
-      : {}),
+    ...addressNode(settings),
+    homeLocation: {
+      "@type": "Place",
+      name: [person.city || site.location.city, person.country || site.location.country].join(", "),
+    },
     ...(person.worksFor
       ? {
           worksFor: {
@@ -148,17 +147,41 @@ function catalogNode(services: Service[]): OfferCatalog {
   };
 }
 
-/** Your city and country from the admin panel, as a postal address. */
+/** Every country's English name mapped to its two-letter code, e.g. "bangladesh" → "BD". */
+const countryCodes = (() => {
+  const names = new Intl.DisplayNames(["en"], { type: "region" });
+  const codes = new Map<string, string>();
+  for (let first = 65; first <= 90; first++) {
+    for (let second = 65; second <= 90; second++) {
+      const code = String.fromCharCode(first, second);
+      const name = names.of(code);
+      // The first code wins, so old aliases (UK) don't replace the real one (GB).
+      if (name && name !== code && !codes.has(name.toLowerCase())) codes.set(name.toLowerCase(), code);
+    }
+  }
+  return codes;
+})();
+
+/** Google wants a two-letter country code; the admin panel may have the name or the code. */
+function countryCode(country: string | null) {
+  const value = country?.trim() ?? "";
+  const name = /^[A-Za-z]{2}$/.test(value) ? new Intl.DisplayNames(["en"], { type: "region" }).of(value.toUpperCase()) : value;
+  return countryCodes.get(name?.toLowerCase() ?? "") ?? site.location.countryCode;
+}
+
+/** Your address from the admin panel (Site settings → Person); empty fields use the ones in content/site.ts. */
 function addressNode({ person }: SiteSettings) {
-  return person.city || person.country
-    ? {
-        address: {
-          "@type": "PostalAddress" as const,
-          ...(person.city ? { addressLocality: person.city } : {}),
-          ...(person.country ? { addressCountry: person.country } : {}),
-        },
-      }
-    : {};
+  const { location } = site;
+
+  return {
+    address: {
+      "@type": "PostalAddress" as const,
+      streetAddress: person.streetAddress || location.streetAddress,
+      addressLocality: person.city || location.city,
+      postalCode: person.postalCode || location.postalCode,
+      addressCountry: countryCode(person.country),
+    },
+  };
 }
 
 /** Google wants a full date and time; the admin panel sends just the date. */
