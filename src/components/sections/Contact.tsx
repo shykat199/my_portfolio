@@ -1,5 +1,6 @@
 import { site } from "@content/site";
 import { Button } from "@/components/ui/Button";
+import { ContactQrCard } from "@/components/ui/ContactQrCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { bookingHref } from "@/lib/booking";
 import { getSettings } from "@/lib/settings";
@@ -29,6 +30,8 @@ export async function Contact() {
               {email}
             </a>
           </p>
+
+          <ContactQrCard className="mt-8" />
         </Reveal>
 
         <div className="md:col-span-7">

@@ -38,6 +38,8 @@ export type SiteSettings = {
     description: string | null;
     email: string;
     phone: string | null;
+    /** Website in the contact QR code, or null to use this site's address. */
+    website: string | null;
     city: string | null;
     country: string | null;
     skills: string[];
@@ -77,6 +79,7 @@ const fallback: SiteSettings = {
     description: null,
     email: site.email,
     phone: null,
+    website: null,
     city: site.location.city,
     country: site.location.country,
     skills: site.skills,

@@ -4,6 +4,7 @@ import { site } from "@content/site";
 import { Career } from "@/components/sections/Career";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
+import { ContactQrCard } from "@/components/ui/ContactQrCard";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { socialIcons } from "@/components/ui/socialIcons";
 import { bookingHref } from "@/lib/booking";
@@ -207,6 +208,7 @@ export default async function AboutPage() {
                   </li>
                 ))}
               </ul>
+              <ContactQrCard className="mt-8" />
             </section>
           )}
         </div>

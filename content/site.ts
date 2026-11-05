@@ -309,6 +309,18 @@ export const site = {
     ctaText: "Book a free 15-minute call and tell me about your project.",
   },
 
+  // The QR code on the About page and in the Contact section. Scanning it saves
+  // your website, email and phone (from the admin panel) as a phone contact.
+  contactQr: {
+    title: "Scan to save my contact",
+    save: "Save contact",
+    share: "Share QR code",
+    shareShort: "Share",
+    // "{name}" is replaced with your name from the admin panel.
+    shareTitle: "{name} – contact QR code",
+    shareText: "Scan this QR code to save {name}'s website, email and phone number.",
+  },
+
   career: {
     eyebrow: "Experience",
     title: "Full-stack developer experience",
