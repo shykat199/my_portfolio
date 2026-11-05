@@ -315,7 +315,89 @@ details[open]:not([data-closing]) .faq-icon {
       background: none;
       padding: 0;
       font-size: inherit;
+      color: inherit;
     }
+  }
+
+  /* Coloured code blocks (lib/highlight.ts), styled like a code editor window. */
+  & .code-block {
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    background: var(--color-code);
+
+    & pre {
+      border: 0;
+      border-radius: 0;
+      /* Keeps the site's code background instead of the theme's. */
+      background: var(--color-code) !important;
+    }
+  }
+
+  & .code-block-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-line);
+    background: rgb(237 243 239 / 0.04);
+    padding: 0.6rem 1rem;
+  }
+
+  & .code-block-dots {
+    display: flex;
+    gap: 0.4rem;
+
+    & span {
+      width: 0.7rem;
+      height: 0.7rem;
+      border-radius: 9999px;
+      background: #ff5f57;
+    }
+
+    & span:nth-child(2) {
+      background: #febc2e;
+    }
+
+    & span:nth-child(3) {
+      background: #28c840;
+    }
+  }
+
+  & .code-block-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  & .code-block-copy {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid var(--color-line);
+    border-radius: 9999px;
+    padding: 0.2rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    transition: color 150ms, border-color 150ms;
+
+    & svg {
+      width: 0.85rem;
+      height: 0.85rem;
+    }
+
+    &:hover,
+    &[data-copied] {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+  }
+
+  & .code-block-lang {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
   }
 
   & ul,

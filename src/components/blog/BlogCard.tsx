@@ -50,11 +50,11 @@ export function BlogCard({ post, featured = false, headingLevel = "h2" }: BlogCa
   return (
     <article
       className={`matte-card group relative flex h-full flex-col overflow-hidden rounded-lg border border-line transition-colors duration-300 hover:border-accent/40 ${
-        featured ? "lg:grid lg:grid-cols-2" : ""
+        featured ? "lg:grid lg:grid-cols-[1.2fr_1fr]" : ""
       }`}
     >
-      <div className={`overflow-hidden border-b border-line ${featured ? "lg:border-r lg:border-b-0" : ""}`}>
-        <div className="transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none">
+      <div className={`overflow-hidden border-b border-line ${featured ? "lg:flex lg:items-center lg:border-r lg:border-b-0 lg:bg-raised" : ""}`}>
+        <div className="w-full transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none">
           <BlogCover
             post={post}
             priority={featured}
@@ -77,7 +77,8 @@ export function BlogCard({ post, featured = false, headingLevel = "h2" }: BlogCa
             {post.title}
           </Link>
         </Heading>
-        <p className="mt-3 leading-relaxed text-muted">{post.description}</p>
+        {/* Clamped so long excerpts end neatly with "…" and cards stay even. */}
+        <p className={`mt-3 leading-relaxed text-muted ${featured ? "line-clamp-4" : "line-clamp-3"}`}>{post.description}</p>
 
         <div className={`flex items-center justify-between gap-4 pt-6 ${featured ? "lg:mt-4" : "mt-auto"}`}>
           <BlogMeta post={post} />
