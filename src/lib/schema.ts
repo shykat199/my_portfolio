@@ -17,6 +17,7 @@ import type {
 import type { BlogPostSummary } from "@content/blog";
 import { site, type FaqItem, type Project, type Service } from "@content/site";
 import type { SiteSettings } from "./settings";
+import { contactPhone } from "./vcard";
 
 const { url } = site;
 
@@ -115,11 +116,7 @@ function personNode(settings: SiteSettings): Person {
     image: { "@id": schemaIds.photo },
     ...(person.city || person.country
       ? {
-          address: {
-            "@type": "PostalAddress",
-            ...(person.city ? { addressLocality: person.city } : {}),
-            ...(person.country ? { addressCountry: person.country } : {}),
-          },
+          ...addressNode(settings),
           homeLocation: { "@type": "Place", name: [person.city, person.country].filter(Boolean).join(", ") },
         }
       : {}),
@@ -151,8 +148,27 @@ function catalogNode(services: Service[]): OfferCatalog {
   };
 }
 
+/** Your city and country from the admin panel, as a postal address. */
+function addressNode({ person }: SiteSettings) {
+  return person.city || person.country
+    ? {
+        address: {
+          "@type": "PostalAddress" as const,
+          ...(person.city ? { addressLocality: person.city } : {}),
+          ...(person.country ? { addressCountry: person.country } : {}),
+        },
+      }
+    : {};
+}
+
+/** Google wants a full date and time; the admin panel sends just the date. */
+function dateTime(date: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T00:00:00+00:00` : date;
+}
+
 function businessNode(settings: SiteSettings): ProfessionalService {
   const { email } = settings.person;
+  const telephone = contactPhone(settings);
 
   return {
   "@type": "ProfessionalService",
@@ -161,6 +177,8 @@ function businessNode(settings: SiteSettings): ProfessionalService {
   description: site.seo.description,
   url: `${url}/`,
   email,
+  ...(telephone ? { telephone } : {}),
+  ...addressNode(settings),
   logo: { "@id": schemaIds.logo },
   image: { "@id": schemaIds.photo },
   founder: { "@id": schemaIds.person },
@@ -169,6 +187,7 @@ function businessNode(settings: SiteSettings): ProfessionalService {
   contactPoint: {
     "@type": "ContactPoint",
     email,
+    ...(telephone ? { telephone } : {}),
     contactType: "customer service",
     availableLanguage: "English",
   },
@@ -223,7 +242,7 @@ export function profilePageNode({ path, name, description, settings }: ProfilePa
     "@type": "ProfilePage",
     "@id": `${page}#profile`,
     mainEntity: personNode(settings),
-    ...(settings.updatedAt ? { dateModified: settings.updatedAt } : {}),
+    ...(settings.updatedAt ? { dateModified: dateTime(settings.updatedAt) } : {}),
   } as ProfilePage;
 }
 
@@ -313,8 +332,8 @@ export function blogPostingNode(post: BlogPostSummary): BlogPosting {
     url: page,
     mainEntityOfPage: { "@id": `${page}#webpage` },
     image: post.cover ? [post.cover.src, `${page}/opengraph-image`] : `${page}/opengraph-image`,
-    datePublished: post.published,
-    dateModified: post.updated ?? post.published,
+    datePublished: dateTime(post.published),
+    dateModified: dateTime(post.updated ?? post.published),
     author: { "@id": schemaIds.person },
     publisher: { "@id": schemaIds.person },
     isPartOf: { "@id": `${url}/blog#blog` },

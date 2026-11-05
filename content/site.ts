@@ -104,7 +104,7 @@ export type TechItem = {
 export const site = {
   name: "Shykat Roy",
   initials: "SR",
-  url: "https://shykatroy.com",
+  url: "https://www.shykatroy.com",
   // Only used if the admin panel can't be reached. Everywhere else the email comes from
   // Site settings → Person → Email in the admin panel.
   email: "shykatroy1@gmail.com",
