@@ -80,6 +80,11 @@ export async function Footer() {
                 {site.footer.privacy}
               </Link>
             </li>
+            <li>
+              <Link href="/site-map" className={linkClass}>
+                {site.footer.sitemap}
+              </Link>
+            </li>
           </ul>
           <p className="mt-4">
             &copy; {new Date().getFullYear()} {site.name}. {site.footer.rights}

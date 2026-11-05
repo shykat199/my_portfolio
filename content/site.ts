@@ -405,6 +405,7 @@ export const site = {
     work: "Work",
     blog: "Blog",
     about: "About",
+    sitemap: "Site map",
   },
 
   servicePage: {
@@ -503,6 +504,31 @@ export const site = {
     tagline: "Websites for businesses worldwide.",
     servicesLabel: "Services",
     privacy: "Privacy policy",
+    sitemap: "Site map",
     rights: "All rights reserved.",
+  },
+
+  // The site map page (/site-map): every page on the site at a glance.
+  // Services, work and posts come from the admin panel.
+  sitemapPage: {
+    title: "Site map",
+    seoTitle: "Site map: all pages, services, work and articles",
+    description:
+      "Every page on shykatroy.com in one place: web development services, case studies, blog articles and how to get in touch.",
+    intro: "Everything on this site in one place.",
+    pages: "Pages",
+    services: "Services",
+    work: "Work",
+    blog: "Blog",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "About me", href: "/about" },
+      { label: "Process", href: "/#process", section: "process" },
+      { label: "Experience", href: "/#experience", section: "experience" },
+      { label: "FAQ", href: "/#faq", section: "faq" },
+      { label: "Contact", href: "/#contact", section: "contact" },
+      { label: "Blog", href: "/blog" },
+      { label: "Privacy policy", href: "/privacy" },
+    ],
   },
 };

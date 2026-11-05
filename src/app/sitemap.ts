@@ -69,6 +69,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     })),
     {
+      // Lists every service, project and post, so it changes whenever they do.
+      url: `${site.url}/site-map`,
+      lastModified: latest(
+        ...services.map((service) => service.updatedAt),
+        ...projects.map((project) => project.updatedAt),
+        ...posts.map(postDate),
+      ),
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
+    {
       url: `${site.url}/privacy`,
       lastModified: site.lastUpdated,
       changeFrequency: "yearly",
