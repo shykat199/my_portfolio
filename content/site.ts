@@ -453,15 +453,29 @@ export const site = {
   },
 
   notFound: {
+    eyebrow: "Error 404",
     title: "Sorry, that page isn't here",
-    text: "It may have moved, or the link may be wrong.",
+    text: "It may have moved, or the link may be wrong. Here are some good places to carry on.",
     link: "Back to the home page",
-    suggestions: "You might be looking for:",
+    contact: "Tell me what you were looking for",
+    // The small code window next to the big "404".
+    code: {
+      fileName: "request.log",
+      description: "A request for this page that came back with 404 Not Found",
+      request: "GET /this-page",
+      response: "404 Not Found",
+      comment: "Nothing here, but the rest of the site is fine.",
+      status: "Try one of the links below",
+    },
+    suggestions: "You might be looking for",
+    // Links to home page sections are left out while that section is switched off in the admin panel.
     links: [
-      { label: "Services", href: "/#services" },
-      { label: "Work", href: "/#work" },
-      { label: "FAQ", href: "/#faq" },
-      { label: "Contact", href: "/#contact" },
+      { label: "Services", href: "/#services", text: "Websites, web apps and SEO, each at one fixed price." },
+      { label: "Work", href: "/#work", text: "Case studies of projects I've built for clients." },
+      { label: "About me", href: "/about", text: "My background, experience, skills and résumé." },
+      { label: "Blog", href: "/blog", text: "Practical guides on websites, speed and search." },
+      { label: "FAQ", href: "/#faq", text: "Answers to what clients usually ask first." },
+      { label: "Contact", href: "/#contact", text: "Send me a message about your project." },
     ],
   },
 
