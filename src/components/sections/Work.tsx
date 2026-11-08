@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@content/site";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getProjects } from "@/lib/projects";
@@ -73,6 +74,12 @@ export async function Work() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-14 flex justify-center md:mt-20">
+          <Button href="/work" variant="secondary">
+            {work.allWork}
+          </Button>
+        </div>
       </div>
     </section>
   );

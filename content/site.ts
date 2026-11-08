@@ -158,7 +158,7 @@ export const site = {
 
   nav: [
     { label: "Services", href: "/#services" },
-    { label: "Work", href: "/#work" },
+    { label: "Work", href: "/work" },
     { label: "Process", href: "/#process" },
     { label: "Experience", href: "/#experience" },
     { label: "About", href: "/about" },
@@ -231,7 +231,23 @@ export const site = {
     demoLabel: "Demo project",
     linkLabel: "Read the case study",
     labels: { problem: "Problem", solution: "Solution", result: "Result" },
+    allWork: "See all work",
     // The projects themselves are managed in the admin panel.
+  },
+
+  // The all-work page (/work). The projects come from the admin panel.
+  workPage: {
+    eyebrow: "Portfolio",
+    title: "Web design and development work",
+    seoTitle: "Portfolio: web design and development projects",
+    description:
+      "Website, booking system and web app projects by Shykat Roy, full-stack web developer: the problem, what was built, the tech used and the results.",
+    intro:
+      "Websites, booking systems and web apps, each with the problem it solved, what I built and the result.",
+    count: "{count} projects",
+    empty: "New projects are on the way. Check back soon.",
+    ctaTitle: "Have a project in mind?",
+    ctaText: "Book a free 15-minute call and tell me what you need. I'll tell you how I'd build it and what it would cost.",
   },
 
   // The tech stack section. Items are spread across three rows that scroll
@@ -523,6 +539,7 @@ export const site = {
     links: [
       { label: "Home", href: "/" },
       { label: "About me", href: "/about" },
+      { label: "All work", href: "/work" },
       { label: "Process", href: "/#process", section: "process" },
       { label: "Experience", href: "/#experience", section: "experience" },
       { label: "FAQ", href: "/#faq", section: "faq" },
