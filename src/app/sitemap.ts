@@ -5,6 +5,11 @@ import { getProjects } from "@/lib/projects";
 import { getServices } from "@/lib/services";
 import { getSettings } from "@/lib/settings";
 
+// Built on every request, so new and changed posts, services and projects show
+// up straight away. Vercel otherwise kept serving the copy made at deploy time.
+// The admin data itself is still cached and refreshed when the admin panel saves.
+export const dynamic = "force-dynamic";
+
 /** The newest of several YYYY-MM-DD dates, ignoring missing ones. */
 function latest(...dates: (string | null | undefined)[]) {
   return dates.filter((date): date is string => Boolean(date)).sort().at(-1) ?? site.lastUpdated;
