@@ -15,13 +15,13 @@ export function BlogMeta({ post }: { post: BlogPostSummary }) {
   );
 }
 
-type BlogCoverProps = { post: BlogPostSummary; sizes: string; priority?: boolean };
+type BlogCoverProps = { post: BlogPostSummary; sizes: string; priority?: boolean; className?: string };
 
-export function BlogCover({ post, sizes, priority = false }: BlogCoverProps) {
+export function BlogCover({ post, sizes, priority = false, className = "" }: BlogCoverProps) {
   if (!post.cover) {
     // No image uploaded yet: a branded panel with the category keeps cards even.
     return (
-      <div className="blueprint-grid flex aspect-[1200/630] w-full items-center justify-center bg-raised">
+      <div className={`blueprint-grid flex aspect-[1200/630] w-full items-center justify-center bg-raised ${className}`}>
         <span className="font-serif text-3xl text-accent/70">{post.category}</span>
       </div>
     );
@@ -37,7 +37,7 @@ export function BlogCover({ post, sizes, priority = false }: BlogCoverProps) {
       preload={priority}
       // SVG illustrations are already sharp at any size, so skip resizing them.
       unoptimized={post.cover.src.endsWith(".svg")}
-      className="aspect-[1200/630] w-full object-cover"
+      className={`aspect-[1200/630] w-full object-cover ${className}`}
     />
   );
 }
@@ -53,12 +53,24 @@ export function BlogCard({ post, featured = false, headingLevel = "h2" }: BlogCa
         featured ? "lg:grid lg:grid-cols-[1.2fr_1fr]" : ""
       }`}
     >
-      <div className={`overflow-hidden border-b border-line ${featured ? "lg:flex lg:items-center lg:border-r lg:border-b-0 lg:bg-raised" : ""}`}>
-        <div className="w-full transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none">
+      <div className={`relative overflow-hidden border-b border-line ${featured ? "lg:flex lg:items-center lg:border-r lg:border-b-0" : ""}`}>
+        {featured && post.cover && (
+          // A blurred copy of the cover fills the space around it, so the whole image shows uncropped.
+          <Image
+            src={post.cover.src}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="64px"
+            unoptimized={post.cover.src.endsWith(".svg")}
+            className="hidden scale-125 object-cover opacity-60 blur-2xl lg:block"
+          />
+        )}
+        <div className="relative w-full transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none">
           <BlogCover
             post={post}
             priority={featured}
-            sizes={featured ? "(min-width: 64rem) 560px, 100vw" : "(min-width: 48rem) 560px, 100vw"}
+            sizes={featured ? "(min-width: 64rem) 760px, 100vw" : "(min-width: 48rem) 560px, 100vw"}
           />
         </div>
       </div>
