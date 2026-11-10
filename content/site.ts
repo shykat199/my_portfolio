@@ -46,6 +46,8 @@ export type Project = {
   category: string;
   /** The year the project was made. */
   year: string;
+  /** Optional public URL for the completed project. */
+  liveUrl?: string | null;
   /** The service this project links to, using the service's slug. */
   relatedService?: string | null;
   /** The three short lines on the home page card. */
@@ -344,6 +346,7 @@ export const site = {
 
   caseStudy: {
     yearLabel: "Year",
+    liveLinkLabel: "Visit live website",
     relatedService: "Related service",
     overview: "Overview",
     problem: "The client's problem",

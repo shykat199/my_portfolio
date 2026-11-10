@@ -100,6 +100,17 @@ export default async function CaseStudyPage({ params }: PageProps) {
           )}
         </p>
         <h1 className="mt-4 max-w-3xl type-display">{project.title}</h1>
+        {project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-block font-medium text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent"
+          >
+            {caseStudy.liveLinkLabel}
+            <span aria-hidden="true"> ↗</span>
+          </a>
+        )}
       </header>
 
       <div className="wrap">
