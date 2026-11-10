@@ -3,6 +3,7 @@ import { site } from "@content/site";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { pageMetadata } from "@/lib/metadata";
 import { webPageNode } from "@/lib/schema";
+import { getSettings } from "@/lib/settings";
 
 const { privacy } = site;
 
@@ -12,7 +13,10 @@ export const metadata: Metadata = pageMetadata({
   path: "/privacy",
 });
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  // "{email}" in the policy text is your email from the admin panel.
+  const { person } = await getSettings();
+
   return (
     <div className="wrap section-y max-w-3xl!">
       <JsonLd
@@ -27,7 +31,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl leading-tight">{section.title}</h2>
             <div className="mt-3 space-y-3 text-lg leading-relaxed text-muted">
               {section.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+                <p key={paragraph}>{paragraph.replaceAll("{email}", person.email)}</p>
               ))}
             </div>
           </section>

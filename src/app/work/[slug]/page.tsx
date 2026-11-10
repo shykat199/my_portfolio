@@ -71,7 +71,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
   const service = project.relatedService ? await getService(project.relatedService) : undefined;
   const crumbs: Crumb[] = [
     { label: breadcrumbs.home, href: "/" },
-    { label: breadcrumbs.work, href: "/#work" },
+    { label: breadcrumbs.work, href: "/work" },
     { label: project.title },
   ];
 

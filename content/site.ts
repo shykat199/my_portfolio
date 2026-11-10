@@ -106,7 +106,9 @@ export type TechItem = {
 export const site = {
   name: "Shykat Roy",
   initials: "SR",
-  url: "https://shykatroy.com",
+  url: "https://www.shykatroy.com",
+  // Only used if the admin panel can't be reached. Everywhere else the email comes from
+  // Site settings → Person → Email in the admin panel.
   email: "shykatroy1@gmail.com",
   // WhatsApp number in international format, digits only (e.g. "8801712345678").
   // The floating WhatsApp button stays hidden until this is filled in.
@@ -117,6 +119,9 @@ export const site = {
   },
   backToTop: "Back to top",
   jobTitle: "Full-Stack Web Developer",
+  // Used when the admin panel has no description or current job set.
+  bio: "Shykat Roy is a full-stack web developer based in Dhaka, Bangladesh, with over three years of professional experience in PHP, Laravel, React, Next.js and Node.js.",
+  worksFor: { name: "PFEC Global", url: null },
   // Shown to search engines as the skills you are known for.
   skills: [
     "Full-stack web development",
@@ -137,7 +142,7 @@ export const site = {
   languages: ["English", "Bengali"],
   // Change this date when you make big content changes. Search engines read it.
   lastUpdated: "2026-11-01",
-  location: { city: "Dhaka", country: "Bangladesh", countryCode: "BD" },
+  location: { streetAddress: "Dhanmondi 27", postalCode: "1209", city: "Dhaka", country: "Bangladesh", countryCode: "BD" },
 
   seo: {
     title: "Full-Stack Developer – Laravel, React & Next.js | Shykat Roy",
@@ -155,10 +160,10 @@ export const site = {
 
   nav: [
     { label: "Services", href: "/#services" },
-    { label: "Work", href: "/#work" },
+    { label: "Work", href: "/work" },
     { label: "Process", href: "/#process" },
     { label: "Experience", href: "/#experience" },
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about" },
     { label: "Blog", href: "/blog" },
   ],
 
@@ -228,7 +233,23 @@ export const site = {
     demoLabel: "Demo project",
     linkLabel: "Read the case study",
     labels: { problem: "Problem", solution: "Solution", result: "Result" },
+    allWork: "See all work",
     // The projects themselves are managed in the admin panel.
+  },
+
+  // The all-work page (/work). The projects come from the admin panel.
+  workPage: {
+    eyebrow: "Portfolio",
+    title: "Web design and development work",
+    seoTitle: "Portfolio: web design and development projects",
+    description:
+      "Website, booking system and web app projects by Shykat Roy, full-stack web developer: the problem, what was built, the tech used and the results.",
+    intro:
+      "Websites, booking systems and web apps, each with the problem it solved, what I built and the result.",
+    count: "{count} projects",
+    empty: "New projects are on the way. Check back soon.",
+    ctaTitle: "Have a project in mind?",
+    ctaText: "Book a free 15-minute call and tell me what you need. I'll tell you how I'd build it and what it would cost.",
   },
 
   // The tech stack section. Items are spread across three rows that scroll
@@ -284,6 +305,41 @@ export const site = {
       "You see progress every week, so there are no surprises",
       "I reply during your working day, wherever you are",
     ],
+    more: "More about me",
+  },
+
+  // The About page (/about). Your name, job, story, jobs, skills and links
+  // come from the admin panel, so they match the rest of the site.
+  aboutPage: {
+    eyebrow: "About me",
+    facts: {
+      role: "Role",
+      company: "Currently at",
+      location: "Based in",
+      experience: "Experience",
+      languages: "Languages",
+      email: "Email",
+    },
+    // "{years}" is replaced with the years since your first job in Experience.
+    experienceYears: "{years}+ years",
+    story: "My story",
+    skills: "Skills",
+    profiles: "Find me online",
+    resume: "Download my résumé",
+    ctaTitle: "Want to work together?",
+    ctaText: "Book a free 15-minute call and tell me about your project.",
+  },
+
+  // The QR code on the About page and in the Contact section. Scanning it saves
+  // your website, email and phone (from the admin panel) as a phone contact.
+  contactQr: {
+    title: "Scan to save my contact",
+    save: "Save contact",
+    share: "Share QR code",
+    shareShort: "Share",
+    // "{name}" is replaced with your name from the admin panel.
+    shareTitle: "{name} – contact QR code",
+    shareText: "Scan this QR code to save {name}'s website, email and phone number.",
   },
 
   career: {
@@ -337,7 +393,10 @@ export const site = {
     },
     submit: "Send message",
     sending: "Sending...",
+    // Shown in a toast after sending; the form is cleared for another message.
+    successTitle: "Message sent",
     success: "Thank you. Your message is on its way, and I will reply within one working day.",
+    closeToast: "Close",
     invalid: "Please check the highlighted fields and try again.",
     failure: "Sorry, your message could not be sent. Please email me directly at",
     privacyNote: "I only use your details to reply to your enquiry. Read the",
@@ -364,6 +423,8 @@ export const site = {
     services: "Services",
     work: "Work",
     blog: "Blog",
+    about: "About",
+    sitemap: "Site map",
   },
 
   servicePage: {
@@ -418,7 +479,7 @@ export const site = {
       {
         title: "Your rights and data deletion",
         body: [
-          "You can ask to see, correct or delete your information at any time. Email shykatroy1@gmail.com with the subject line \"Data request\" and I will respond within one month.",
+          "You can ask to see, correct or delete your information at any time. Email {email} with the subject line \"Data request\" and I will respond within one month.",
           "If you are unhappy with how your data has been handled, please contact me first. You also have the right to complain to the data protection authority in your country.",
         ],
       },
@@ -432,15 +493,29 @@ export const site = {
   },
 
   notFound: {
+    eyebrow: "Error 404",
     title: "Sorry, that page isn't here",
-    text: "It may have moved, or the link may be wrong.",
+    text: "It may have moved, or the link may be wrong. Here are some good places to carry on.",
     link: "Back to the home page",
-    suggestions: "You might be looking for:",
+    contact: "Tell me what you were looking for",
+    // The small code window next to the big "404".
+    code: {
+      fileName: "request.log",
+      description: "A request for this page that came back with 404 Not Found",
+      request: "GET /this-page",
+      response: "404 Not Found",
+      comment: "Nothing here, but the rest of the site is fine.",
+      status: "Try one of the links below",
+    },
+    suggestions: "You might be looking for",
+    // Links to home page sections are left out while that section is switched off in the admin panel.
     links: [
-      { label: "Services", href: "/#services" },
-      { label: "Work", href: "/#work" },
-      { label: "FAQ", href: "/#faq" },
-      { label: "Contact", href: "/#contact" },
+      { label: "Services", href: "/#services", text: "Websites, web apps and SEO, each at one fixed price." },
+      { label: "Work", href: "/#work", text: "Case studies of projects I've built for clients." },
+      { label: "About me", href: "/about", text: "My background, experience, skills and résumé." },
+      { label: "Blog", href: "/blog", text: "Practical guides on websites, speed and search." },
+      { label: "FAQ", href: "/#faq", text: "Answers to what clients usually ask first." },
+      { label: "Contact", href: "/#contact", text: "Send me a message about your project." },
     ],
   },
 
@@ -448,6 +523,32 @@ export const site = {
     tagline: "Websites for businesses worldwide.",
     servicesLabel: "Services",
     privacy: "Privacy policy",
+    sitemap: "Site map",
     rights: "All rights reserved.",
+  },
+
+  // The site map page (/site-map): every page on the site at a glance.
+  // Services, work and posts come from the admin panel.
+  sitemapPage: {
+    title: "Site map",
+    seoTitle: "Site map: all pages, services, work and articles",
+    description:
+      "Every page on shykatroy.com in one place: web development services, case studies, blog articles and how to get in touch.",
+    intro: "Everything on this site in one place.",
+    pages: "Pages",
+    services: "Services",
+    work: "Work",
+    blog: "Blog",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "About me", href: "/about" },
+      { label: "All work", href: "/work" },
+      { label: "Process", href: "/#process", section: "process" },
+      { label: "Experience", href: "/#experience", section: "experience" },
+      { label: "FAQ", href: "/#faq", section: "faq" },
+      { label: "Contact", href: "/#contact", section: "contact" },
+      { label: "Blog", href: "/blog" },
+      { label: "Privacy policy", href: "/privacy" },
+    ],
   },
 };

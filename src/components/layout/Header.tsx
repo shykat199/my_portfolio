@@ -41,12 +41,14 @@ function NavIcon({ id, className }: { id: string; className: string }) {
   );
 }
 
-export function Header({ logo }: { logo: string | null }) {
+export function Header({ logo, hiddenSections }: { logo: string | null; hiddenSections: string[] }) {
   const [open, setOpen] = useState(false);
   const [shrunk, setShrunk] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const pathname = usePathname();
   const current = pathname === "/" ? active : null;
+  // Links to home page sections switched off in the admin panel are left out.
+  const isShown = (index: number) => !(site.nav[index].href.includes("#") && hiddenSections.includes(navKeys[index]));
   const isCurrent = (index: number) =>
     site.nav[index].href.includes("#") ? current === navKeys[index] : pathname.startsWith(site.nav[index].href);
 
@@ -140,7 +142,7 @@ export function Header({ logo }: { logo: string | null }) {
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-0.5">
-            {site.nav.map((item, index) => (
+            {site.nav.map((item, index) => isShown(index) && (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -186,7 +188,7 @@ export function Header({ logo }: { logo: string | null }) {
         className="pointer-events-auto fixed inset-0 -z-10 overflow-y-auto bg-surface pt-24 lg:hidden"
       >
         <ul className="wrap">
-          {site.nav.map((item, index) => (
+          {site.nav.map((item, index) => isShown(index) && (
             <li key={item.href} className="border-b border-line">
               <Link
                 href={item.href}

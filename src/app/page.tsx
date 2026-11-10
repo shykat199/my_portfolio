@@ -28,8 +28,25 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+/** The sections below the hero, in order, keyed by the id the admin panel uses to switch them off. */
+const sections = [
+  ["about", About],
+  ["trust", TrustStrip],
+  ["services", Services],
+  ["work", Work],
+  ["stack", TechStack],
+  ["process", Process],
+  ["experience", Career],
+  ["testimonials", Testimonials],
+  ["blog", LatestPosts],
+  ["faq", Faq],
+  ["contact", Contact],
+] as const;
+
 export default async function Home() {
-  const [faqs, { seo }] = await Promise.all([getFaqs(), getSettings()]);
+  const [faqs, { seo, hiddenSections }] = await Promise.all([getFaqs(), getSettings()]);
+  const shown = sections.filter(([id]) => !hiddenSections.includes(id));
+  const showsFaq = shown.some(([id]) => id === "faq");
 
   return (
     <>
@@ -37,21 +54,13 @@ export default async function Home() {
         nodes={[
           websiteNode,
           webPageNode({ path: "/", name: seo.title, description: seo.description }),
-          ...(faqs.length > 0 ? [faqNode("/", faqs)] : []),
+          ...(showsFaq && faqs.length > 0 ? [faqNode("/", faqs)] : []),
         ]}
       />
       <Hero />
-      <TrustStrip />
-      <Services />
-      <Work />
-      <TechStack />
-      <Process />
-      <Career />
-      <About />
-      <Testimonials />
-      <LatestPosts />
-      <Faq />
-      <Contact />
+      {shown.map(([id, Section]) => (
+        <Section key={id} />
+      ))}
     </>
   );
 }

@@ -8,6 +8,7 @@ import type {
   OfferCatalog,
   Person,
   ProfessionalService,
+  ProfilePage,
   Service as ServiceSchema,
   Thing,
   WebPage,
@@ -16,6 +17,7 @@ import type {
 import type { BlogPostSummary } from "@content/blog";
 import { site, type FaqItem, type Project, type Service } from "@content/site";
 import type { SiteSettings } from "./settings";
+import { contactPhone } from "./vcard";
 
 const { url } = site;
 
@@ -107,19 +109,16 @@ function personNode(settings: SiteSettings): Person {
     jobTitle: person.jobTitle,
     ...(person.description ? { description: person.description } : {}),
     url: `${url}/`,
-    mainEntityOfPage: { "@id": `${url}/#webpage` },
+    // The About page is the page about you.
+    mainEntityOfPage: { "@id": `${url}/about#profile` },
     email: person.email,
     ...(person.phone ? { telephone: person.phone } : {}),
     image: { "@id": schemaIds.photo },
-    ...(person.city || person.country
-      ? {
-          address: {
-            "@type": "PostalAddress",
-            ...(person.city ? { addressLocality: person.city } : {}),
-            ...(person.country ? { addressCountry: person.country } : {}),
-          },
-        }
-      : {}),
+    ...addressNode(settings),
+    homeLocation: {
+      "@type": "Place",
+      name: [person.city || site.location.city, person.country || site.location.country].join(", "),
+    },
     ...(person.worksFor
       ? {
           worksFor: {
@@ -148,13 +147,61 @@ function catalogNode(services: Service[]): OfferCatalog {
   };
 }
 
-const business: ProfessionalService = {
+/** Every country's English name mapped to its two-letter code, e.g. "bangladesh" → "BD". */
+const countryCodes = (() => {
+  const names = new Intl.DisplayNames(["en"], { type: "region" });
+  const codes = new Map<string, string>();
+  for (let first = 65; first <= 90; first++) {
+    for (let second = 65; second <= 90; second++) {
+      const code = String.fromCharCode(first, second);
+      const name = names.of(code);
+      // The first code wins, so old aliases (UK) don't replace the real one (GB).
+      if (name && name !== code && !codes.has(name.toLowerCase())) codes.set(name.toLowerCase(), code);
+    }
+  }
+  return codes;
+})();
+
+/** Google wants a two-letter country code; the admin panel may have the name or the code. */
+function countryCode(country: string | null) {
+  const value = country?.trim() ?? "";
+  const name = /^[A-Za-z]{2}$/.test(value) ? new Intl.DisplayNames(["en"], { type: "region" }).of(value.toUpperCase()) : value;
+  return countryCodes.get(name?.toLowerCase() ?? "") ?? site.location.countryCode;
+}
+
+/** Your address from the admin panel (Site settings → Person); empty fields use the ones in content/site.ts. */
+function addressNode({ person }: SiteSettings) {
+  const { location } = site;
+
+  return {
+    address: {
+      "@type": "PostalAddress" as const,
+      streetAddress: person.streetAddress || location.streetAddress,
+      addressLocality: person.city || location.city,
+      postalCode: person.postalCode || location.postalCode,
+      addressCountry: countryCode(person.country),
+    },
+  };
+}
+
+/** Google wants a full date and time; the admin panel sends just the date. */
+function dateTime(date: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T00:00:00+00:00` : date;
+}
+
+function businessNode(settings: SiteSettings): ProfessionalService {
+  const { email } = settings.person;
+  const telephone = contactPhone(settings);
+
+  return {
   "@type": "ProfessionalService",
   "@id": schemaIds.business,
   name: site.name,
   description: site.seo.description,
   url: `${url}/`,
-  email: site.email,
+  email,
+  ...(telephone ? { telephone } : {}),
+  ...addressNode(settings),
   logo: { "@id": schemaIds.logo },
   image: { "@id": schemaIds.photo },
   founder: { "@id": schemaIds.person },
@@ -162,16 +209,18 @@ const business: ProfessionalService = {
   priceRange: "££",
   contactPoint: {
     "@type": "ContactPoint",
-    email: site.email,
+    email,
+    ...(telephone ? { telephone } : {}),
     contactType: "customer service",
     availableLanguage: "English",
   },
   hasOfferCatalog: { "@id": schemaIds.catalog },
-};
+  };
+}
 
 /** Connected to every page's graph through the @id references above. */
 export function siteGraph(services: Service[], settings: SiteSettings): Thing[] {
-  return [personNode(settings), photoNode(settings), logoNode(settings), business, catalogNode(services)];
+  return [personNode(settings), photoNode(settings), logoNode(settings), businessNode(settings), catalogNode(services)];
 }
 
 export const websiteNode: WebSite = {
@@ -203,6 +252,21 @@ export function webPageNode({ path, name, description, hasBreadcrumb }: WebPageO
     isPartOf: { "@id": schemaIds.website },
     ...(hasBreadcrumb ? { breadcrumb: { "@id": `${page}#breadcrumb` } } : {}),
   };
+}
+
+type ProfilePageOptions = WebPageOptions & { settings: SiteSettings };
+
+/** The About page: a profile page whose subject is you, with your full Person details. */
+export function profilePageNode({ path, name, description, settings }: ProfilePageOptions): ProfilePage {
+  const page = pageUrl(path);
+
+  return {
+    ...webPageNode({ path, name, description, hasBreadcrumb: true }),
+    "@type": "ProfilePage",
+    "@id": `${page}#profile`,
+    mainEntity: personNode(settings),
+    ...(settings.updatedAt ? { dateModified: dateTime(settings.updatedAt) } : {}),
+  } as ProfilePage;
 }
 
 export function faqNode(path: string, items: FaqItem[]): FAQPage {
@@ -291,8 +355,8 @@ export function blogPostingNode(post: BlogPostSummary): BlogPosting {
     url: page,
     mainEntityOfPage: { "@id": `${page}#webpage` },
     image: post.cover ? [post.cover.src, `${page}/opengraph-image`] : `${page}/opengraph-image`,
-    datePublished: post.published,
-    dateModified: post.updated ?? post.published,
+    datePublished: dateTime(post.published),
+    dateModified: dateTime(post.updated ?? post.published),
     author: { "@id": schemaIds.person },
     publisher: { "@id": schemaIds.person },
     isPartOf: { "@id": `${url}/blog#blog` },

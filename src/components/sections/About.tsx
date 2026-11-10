@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { site } from "@content/site";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { getSettings } from "@/lib/settings";
 
 export async function About() {
   const { eyebrow } = site.about;
-  const { about } = await getSettings();
+  const { about, resume } = await getSettings();
 
   return (
     <section id="about" className="border-y border-line bg-raised/80">
@@ -41,6 +42,17 @@ export async function About() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            {resume && (
+              <Button href="/resume" prefetch={false} download icon="download">
+                {site.aboutPage.resume}
+              </Button>
+            )}
+            <Button href="/about" variant="secondary" icon="arrow">
+              {site.about.more}
+            </Button>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -9,6 +9,7 @@ const variants = {
 const icons = {
   calendar: "M8 3v3M16 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1ZM9 14l2 2 4-4",
   arrow: "M5 12h14M13 6l6 6-6 6",
+  download: "M12 4v11M7 10l5 5 5-5M5 20h14",
 };
 
 type ButtonProps = ComponentProps<typeof Link> & {
@@ -27,6 +28,12 @@ export function Button({ variant = "primary", icon, className = "", href, childr
       {...props}
     >
       {icon === "calendar" && <ButtonIcon path={icons.calendar} className="size-[1.1em]" />}
+      {icon === "download" && (
+        <ButtonIcon
+          path={icons.download}
+          className="size-[1.1em] transition-transform duration-200 group-hover:translate-y-0.5"
+        />
+      )}
       {children}
       {icon === "arrow" && (
         <ButtonIcon

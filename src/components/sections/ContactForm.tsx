@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { site } from "@content/site";
 import { sendContactMessage, type ContactField, type ContactState } from "@/app/actions";
 
@@ -54,25 +54,59 @@ function Field({ name, label, state, type = "text", autoComplete, required, mult
   );
 }
 
-export function ContactForm() {
+const TOAST_SECONDS = 6;
+
+/** "Message sent" notice at the bottom of the screen. Always rendered, so screen readers announce it. */
+function SentToast({ open, onClose }: { open: boolean; onClose: () => void }) {
+  return (
+    <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4 sm:bottom-6">
+      {open && (
+        <div className="toast-in pointer-events-auto flex w-full max-w-md items-start gap-3 rounded-lg border border-accent/40 bg-raised p-4 text-fg shadow-[0_20px_50px_-15px_rgb(0_0_0/0.8)]">
+          <span aria-hidden="true" className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-accent text-surface">
+            <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m5 12 5 5L20 7" />
+            </svg>
+          </span>
+          <p className="flex-1 text-sm leading-snug">
+            <span className="block font-medium">{contact.successTitle}</span>
+            <span className="mt-0.5 block text-muted">{contact.success}</span>
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={contact.closeToast}
+            className="-m-1 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted transition-colors hover:bg-fg/10 hover:text-fg"
+          >
+            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** `email` is shown if sending fails, so visitors can still reach you. */
+export function ContactForm({ email }: { email: string }) {
   const [state, formAction, pending] = useActionState(sendContactMessage, initialState);
   const statusRef = useRef<HTMLDivElement>(null);
+  // Each send returns a new state object, so the toast shows again for every message.
+  const [closedFor, setClosedFor] = useState<ContactState | null>(null);
+  const toastOpen = state.status === "success" && closedFor !== state;
 
   useEffect(() => {
-    if (state.status !== "idle") statusRef.current?.focus();
+    if (state.status === "invalid" || state.status === "failure") statusRef.current?.focus();
+    if (state.status !== "success") return;
+
+    const timer = setTimeout(() => setClosedFor(state), TOAST_SECONDS * 1000);
+    return () => clearTimeout(timer);
   }, [state]);
 
-  if (state.status === "success") {
-    return (
-      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-lg bg-surface p-7 text-fg sm:p-9">
-        <h3 className="text-3xl leading-tight">{contact.formTitle}</h3>
-        <p className="mt-3 text-lg leading-relaxed">{contact.success}</p>
-      </div>
-    );
-  }
-
   return (
+    // React clears the fields after a successful send; after an error they are refilled from state.values.
     <form action={formAction} className="rounded-lg bg-surface p-6 text-fg sm:p-9">
+      <SentToast open={toastOpen} onClose={() => setClosedFor(state)} />
       <h3 className="text-3xl leading-tight">{contact.formTitle}</h3>
 
       <div ref={statusRef} tabIndex={-1} role="alert">
@@ -82,8 +116,8 @@ export function ContactForm() {
         {state.status === "failure" && (
           <p className="mt-4 text-sm font-medium text-error">
             {contact.failure}{" "}
-            <a href={`mailto:${site.email}`} className="underline underline-offset-2">
-              {site.email}
+            <a href={`mailto:${email}`} className="underline underline-offset-2">
+              {email}
             </a>
             .
           </p>

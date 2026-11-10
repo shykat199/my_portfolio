@@ -11,9 +11,13 @@ export type SiteSettings = {
   logo: string | null;
   /** Uploaded favicon (square PNG), or null for the built-in icon. */
   favicon: string | null;
+  /** Uploaded résumé (PDF), or null to hide the download button. */
+  resume: string | null;
   social: Record<SocialNetwork, string | null>;
   /** WhatsApp number with country code, digits only, or null to hide WhatsApp. */
   whatsapp: string | null;
+  /** Home page sections switched off in the admin panel, by section id (e.g. "work"). */
+  hiddenSections: string[];
   hero: {
     /** The start of the typing line, e.g. "I build". */
     prefix: string;
@@ -34,6 +38,10 @@ export type SiteSettings = {
     description: string | null;
     email: string;
     phone: string | null;
+    /** Website in the contact QR code, or null to use this site's address. */
+    website: string | null;
+    streetAddress: string | null;
+    postalCode: string | null;
     city: string | null;
     country: string | null;
     skills: string[];
@@ -55,8 +63,10 @@ const fallback: SiteSettings = {
   updatedAt: null,
   logo: null,
   favicon: null,
+  resume: null,
   social: { linkedin: site.links.linkedin, github: site.links.github, facebook: null, instagram: null, x: null },
   whatsapp: site.whatsapp.number || null,
+  hiddenSections: [],
   hero: {
     prefix: site.hero.eyebrow.prefix,
     words: site.hero.eyebrow.words,
@@ -68,14 +78,17 @@ const fallback: SiteSettings = {
   person: {
     name: site.name,
     jobTitle: site.jobTitle,
-    description: null,
+    description: site.bio,
     email: site.email,
     phone: null,
+    website: null,
+    streetAddress: site.location.streetAddress,
+    postalCode: site.location.postalCode,
     city: site.location.city,
     country: site.location.country,
     skills: site.skills,
     languages: site.languages,
-    worksFor: null,
+    worksFor: site.worksFor,
   },
   about: {
     title: site.about.title,
@@ -98,9 +111,22 @@ export async function getSettings(): Promise<SiteSettings> {
     // Anything not filled in yet in the admin panel keeps the built-in content.
     return {
       ...settings,
+      resume: settings.resume ?? null,
+      hiddenSections: settings.hiddenSections ?? fallback.hiddenSections,
       hero: settings.hero ?? fallback.hero,
       seo: settings.seo ?? fallback.seo,
-      person: settings.person ?? fallback.person,
+      person: settings.person
+        ? {
+            ...settings.person,
+            description: settings.person.description || fallback.person.description,
+            streetAddress: settings.person.streetAddress || fallback.person.streetAddress,
+            postalCode: settings.person.postalCode || fallback.person.postalCode,
+            city: settings.person.city || fallback.person.city,
+            country: settings.person.country || fallback.person.country,
+            skills: settings.person.skills?.length ? settings.person.skills : fallback.person.skills,
+            worksFor: settings.person.worksFor ?? fallback.person.worksFor,
+          }
+        : fallback.person,
       about: { ...settings.about, photo: settings.about.photo ?? fallback.about.photo },
     };
   } catch (error) {
