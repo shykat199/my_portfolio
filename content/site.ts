@@ -114,7 +114,8 @@ export const site = {
   // The floating WhatsApp button stays hidden until this is filled in.
   whatsapp: {
     number: "8801317120335",
-    message: "Hi Shykat, I found your website and would like to talk about a project.",
+    message:
+      "Hi Shykat, I found your website and would like to talk about a project.",
     label: "Chat on WhatsApp",
   },
   backToTop: "Back to top",
@@ -142,7 +143,13 @@ export const site = {
   languages: ["English", "Bengali"],
   // Change this date when you make big content changes. Search engines read it.
   lastUpdated: "2026-11-01",
-  location: { streetAddress: "Dhanmondi 27", postalCode: "1209", city: "Dhaka", country: "Bangladesh", countryCode: "BD" },
+  location: {
+    streetAddress: "Dhanmondi 27",
+    postalCode: "1209",
+    city: "Dhaka",
+    country: "Bangladesh",
+    countryCode: "BD",
+  },
 
   seo: {
     title: "Full-Stack Developer – Laravel, React & Next.js | Shykat Roy",
@@ -177,11 +184,18 @@ export const site = {
     // The line above the headline. The words are typed out one at a time.
     eyebrow: {
       prefix: "I build",
-      words: ["websites", "web apps", "mobile apps", "booking systems", "APIs & back ends"],
+      words: [
+        "websites",
+        "web apps",
+        "mobile apps",
+        "booking systems",
+        "APIs & back ends",
+      ],
     },
     // The page's main heading (H1). Google reads it first, so it leads with the
     // main search phrase and stays unique to this page.
-    headline: "Full-stack web developer for fast, SEO-friendly websites that win more customers.",
+    headline:
+      "Full-stack web developer for fast, SEO-friendly websites that win more customers.",
     // These words of the headline appear in colour. They must match exactly.
     headlineHighlight: "more customers",
     supporting:
@@ -209,9 +223,15 @@ export const site = {
 
   trust: [
     { title: "3+ years", text: "of professional web development" },
-    { title: "Always available", text: "support whenever you need it, any time zone" },
+    {
+      title: "Always available",
+      text: "support whenever you need it, any time zone",
+    },
     { title: "Fixed prices", text: "agreed up front, with no surprises" },
-    { title: "Full-stack", text: "React & Next.js front end, PHP Laravel & Node.js back end" },
+    {
+      title: "Full-stack",
+      text: "React & Next.js front end, PHP Laravel & Node.js back end",
+    },
   ],
 
   services: {
@@ -229,7 +249,7 @@ export const site = {
     eyebrow: "Selected work",
     title: "Web design and development projects",
     intro:
-      "Demo website projects that show how I approach a brief, from design to development. Each one is clearly labelled.",
+      "Real projects for real businesses. Each case study shows the problem, what I built, and the result.",
     demoLabel: "Demo project",
     linkLabel: "Read the case study",
     labels: { problem: "Problem", solution: "Solution", result: "Result" },
@@ -249,7 +269,8 @@ export const site = {
     count: "{count} projects",
     empty: "New projects are on the way. Check back soon.",
     ctaTitle: "Have a project in mind?",
-    ctaText: "Book a free 15-minute call and tell me what you need. I'll tell you how I'd build it and what it would cost.",
+    ctaText:
+      "Book a free 15-minute call and tell me what you need. I'll tell you how I'd build it and what it would cost.",
   },
 
   // The tech stack section. Items are spread across three rows that scroll
@@ -257,14 +278,16 @@ export const site = {
   stack: {
     eyebrow: "Tech stack",
     title: "My full-stack development tech stack",
-    intro: "Modern, proven technology for the front end and back end, from React and Next.js to PHP, Laravel and Node.js, chosen to keep your website fast, secure, SEO-friendly and easy to grow.",
+    intro:
+      "Modern, proven technology for the front end and back end, from React and Next.js to PHP, Laravel and Node.js, chosen to keep your website fast, secure, SEO-friendly and easy to grow.",
     // The technologies themselves are managed in the admin panel (name and logo).
   },
 
   process: {
     eyebrow: "Process",
     title: "Four simple steps",
-    intro: "A clear web development process: you will always know what is happening, what comes next and what it costs.",
+    intro:
+      "A clear web development process: you will always know what is happening, what comes next and what it costs.",
     steps: [
       {
         title: "Free call",
@@ -339,7 +362,8 @@ export const site = {
     shareShort: "Share",
     // "{name}" is replaced with your name from the admin panel.
     shareTitle: "{name} – contact QR code",
-    shareText: "Scan this QR code to save {name}'s website, email and phone number.",
+    shareText:
+      "Scan this QR code to save {name}'s website, email and phone number.",
   },
 
   career: {
@@ -363,7 +387,8 @@ export const site = {
   faq: {
     eyebrow: "FAQ",
     title: "Frequently asked questions",
-    intro: "Quick answers about pricing, timelines, technology and working together.",
+    intro:
+      "Quick answers about pricing, timelines, technology and working together.",
     askTitle: "Still have a question?",
     askText: "Send me a message and I will reply within one working day.",
     askLabel: "Ask me directly",
@@ -389,16 +414,19 @@ export const site = {
       email: "e.g. sarah@yourbusiness.com",
       business: "e.g. Thompson Plumbing",
       website: "e.g. yourbusiness.com",
-      message: "Tell me a little about your business and what you need, e.g. a new website, online booking or help with an existing site.",
+      message:
+        "Tell me a little about your business and what you need, e.g. a new website, online booking or help with an existing site.",
     },
     submit: "Send message",
     sending: "Sending...",
     // Shown in a toast after sending; the form is cleared for another message.
     successTitle: "Message sent",
-    success: "Thank you. Your message is on its way, and I will reply within one working day.",
+    success:
+      "Thank you. Your message is on its way, and I will reply within one working day.",
     closeToast: "Close",
     invalid: "Please check the highlighted fields and try again.",
-    failure: "Sorry, your message could not be sent. Please email me directly at",
+    failure:
+      "Sorry, your message could not be sent. Please email me directly at",
     privacyNote: "I only use your details to reply to your enquiry. Read the",
     privacyLink: "privacy policy",
   },
@@ -414,7 +442,8 @@ export const site = {
     results: "Results",
     screenshots: "Screenshots",
     ctaTitle: "Want something like this for your business?",
-    ctaText: "Book a free 15-minute call and we can talk through what you need.",
+    ctaText:
+      "Book a free 15-minute call and we can talk through what you need.",
   },
 
   breadcrumbs: {
@@ -479,7 +508,7 @@ export const site = {
       {
         title: "Your rights and data deletion",
         body: [
-          "You can ask to see, correct or delete your information at any time. Email {email} with the subject line \"Data request\" and I will respond within one month.",
+          'You can ask to see, correct or delete your information at any time. Email {email} with the subject line "Data request" and I will respond within one month.',
           "If you are unhappy with how your data has been handled, please contact me first. You also have the right to complain to the data protection authority in your country.",
         ],
       },
@@ -510,12 +539,36 @@ export const site = {
     suggestions: "You might be looking for",
     // Links to home page sections are left out while that section is switched off in the admin panel.
     links: [
-      { label: "Services", href: "/#services", text: "Websites, web apps and SEO, each at one fixed price." },
-      { label: "Work", href: "/#work", text: "Case studies of projects I've built for clients." },
-      { label: "About me", href: "/about", text: "My background, experience, skills and résumé." },
-      { label: "Blog", href: "/blog", text: "Practical guides on websites, speed and search." },
-      { label: "FAQ", href: "/#faq", text: "Answers to what clients usually ask first." },
-      { label: "Contact", href: "/#contact", text: "Send me a message about your project." },
+      {
+        label: "Services",
+        href: "/#services",
+        text: "Websites, web apps and SEO, each at one fixed price.",
+      },
+      {
+        label: "Work",
+        href: "/#work",
+        text: "Case studies of projects I've built for clients.",
+      },
+      {
+        label: "About me",
+        href: "/about",
+        text: "My background, experience, skills and résumé.",
+      },
+      {
+        label: "Blog",
+        href: "/blog",
+        text: "Practical guides on websites, speed and search.",
+      },
+      {
+        label: "FAQ",
+        href: "/#faq",
+        text: "Answers to what clients usually ask first.",
+      },
+      {
+        label: "Contact",
+        href: "/#contact",
+        text: "Send me a message about your project.",
+      },
     ],
   },
 
